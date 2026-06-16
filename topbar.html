@@ -1,0 +1,438 @@
+<header class="top-bar">
+    <div class="welcome-text">
+        {% if custom_page_title %}
+            <h2>{{ custom_page_title | safe }}</h2>
+            <p>{{ custom_page_subtitle | safe }}</p>
+        {% else %}
+            <h2>Welcome back, <span class="highlight-name">{{ user.name }}</span> <span class="wave-emoji">👋</span></h2>
+            <p>Find the nearest smart garage to your location.</p>
+        {% endif %}    
+    </div>
+    
+    <div class="top-actions">
+
+        <a href="wallet.html" class="wallet-badge">
+            <i class="fa-solid fa-wallet"></i> Balance: <strong id="top-balance-badge">{{ "%.2f"|format(user.balance) }} EGP</strong>
+        </a>
+        <div class="theme-toggle" id="themeToggle">
+            <i class="fa-solid fa-moon"></i>
+        </div>
+        
+        <div class="notification-trigger" id="notifTrigger" style="position: relative; cursor: pointer;">
+            <i class="fa-solid fa-bell" style="font-size: 1.2rem;"></i>
+            <span class="badge-dot" id="notifBadge" style="display: none; position: absolute; top: -8px; right: -10px; background: #ef4444; color: white; border-radius: 50%; min-width: 18px; height: 18px; font-size: 0.75rem; font-weight: bold; align-items: center; justify-content: center; line-height: 1;">0</span>
+        </div>
+
+        <div class="profile-dropdown-wrapper">
+            <div class="user-avatar" id="avatarMenuBtn">
+                <img src="https://ui-avatars.com/api/?name={{ user.name }}&background=00c2b8&color=fff" alt="{{ user.name }} Avatar">
+            </div>
+            <div class="dropdown-menu" id="avatarDropdown">
+                <div class="dropdown-header">
+                    <strong>{{ user.name }}</strong>
+                    <span>Premium Member</span>
+                </div>
+                <hr>
+                <a href="#" id="changePicBtn"><i class="fa-solid fa-camera"></i> Change Picture</a>
+                <a href="settings.html" id="accountSettingsBtn" class="dropdown-item">
+                    <i class="fa-solid fa-user-gear"></i> Account Settings
+                </a>                
+                <hr>
+                <a href="/logout" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="notif-sidebar-overlay" id="notifOverlay"></div>
+<aside class="notif-sidebar" id="notifSidebar">
+    <div class="notif-sidebar-header">
+        <h3><i class="fa-solid fa-bell"></i> Messages & Alerts</h3>
+        <button id="closeNotifBtn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="notif-sidebar-content">
+        </div>
+</aside>
+    
+<div class="modal-overlay" id="avatarUploadModal" style="z-index: 3000;">
+    <div class="booking-card" style="max-width: 400px; text-align: center;">
+        <button class="close-modal" id="closeAvatarModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        <div class="booking-header" style="margin-bottom: 20px;">
+            <h3>Change Profile Picture 👤</h3>
+            <p>Choose a suitable image from your device.</p>
+        </div>
+        <div class="avatar-preview-container" style="margin: 20px auto; width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--primary-color); overflow: hidden; background: #0f172a; display: flex; align-items: center; justify-content: center;">
+            <img id="avatarPreview" src="https://ui-avatars.com/api/?name={{ user.name }}&background=00c2b8&color=fff" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <form id="avatarUploadForm" style="display: flex; flex-direction: column; gap: 15px;">
+            <label class="btn" style="background: #1e293b; border: 1px dashed var(--primary-color); color: var(--primary-color); cursor: pointer; padding: 12px; display: block; border-radius: 8px;">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload from device
+                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+            </label>
+            <button type="submit" class="btn-primary-action">Save New Picture</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="accountSettingsModal" style="z-index: 3000;">
+    <div class="booking-card" style="max-width: 450px;">
+        <button class="close-modal" id="closeSettingsModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        <div class="booking-header" style="margin-bottom: 20px;">
+            <h3>Account Settings ⚙️</h3>
+            <p>Update your personal details and password.</p>
+        </div>
+        <form id="accountSettingsForm" class="booking-form">
+            <div class="form-group mb-4">
+                <label class="section-subtitle">Full Name</label>
+                <input type="text" id="settingsName" class="form-control" value="{{ user.name }}" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+            </div>
+            <div class="form-group mb-4">
+                <label class="section-subtitle">Phone Number</label>
+                <input type="text" id="settingsPhone" class="form-control" value="{{ user.phone if user.phone else '' }}" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+            </div>
+            <hr style="border-color: var(--border-color); margin: 20px 0;">
+            <h4 style="color: var(--warning-color); font-size: 1rem; margin-bottom: 15px;"><i class="fa-solid fa-key"></i> Change Password</h4>
+            <div class="form-group mb-4">
+                <label class="section-subtitle">Current Password</label>
+                <input type="password" id="currentPassword" class="form-control" placeholder="••••••••" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+            </div>
+            <div class="form-group mb-4">
+                <label class="section-subtitle">New Password</label>
+                <input type="password" id="newPassword" class="form-control" placeholder="Enter new password" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+            </div>
+            <button type="submit" class="btn-primary-action">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<div id="sirenAlarmOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 9999; backdrop-filter: blur(5px); flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
+    <div id="sirenAlarmBox" style="background: #0f172a; border: 4px solid #ef4444; border-radius: 20px; padding: 40px; text-align: center; max-width: 500px; width: 90%; animation: pulse-danger 1s infinite;">
+        
+        <i id="sirenIcon" class="fa-solid fa-lightbulb fa-spin" style="font-size: 80px; color: #ef4444; text-shadow: 0 0 20px #ef4444; margin-bottom: 20px;"></i>
+        
+        <h1 id="sirenTitle" style="color: #ef4444; font-size: 2rem; margin-bottom: 15px; text-transform: uppercase;">EMERGENCY DETECTED</h1>
+        <p id="sirenMessage" style="color: white; font-size: 1.2rem; line-height: 1.6;"></p>
+        
+        <p style="color: #64748b; font-size: 0.9rem; margin-top: 25px;"><i class="fa-solid fa-hand-pointer"></i> Click anywhere to close</p>
+    </div>
+</div>
+
+<audio id="sirenAudio" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" loop preload="auto"></audio>
+<audio id="normalNotifAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+<style>
+@keyframes pulse-danger {
+    0% { transform: scale(1); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+    50% { transform: scale(1.02); box-shadow: 0 0 80px rgba(239, 68, 68, 1); }
+    100% { transform: scale(1); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+}
+
+/* 3D Car Visualizer classes added here to ensure correct rendering inside the notification across all pages */
+.smart-car-chassis {
+    width: 76px; height: 170px; background: #1e2430; border-radius: 40px 40px 15px 15px; position: relative;
+    box-shadow: inset 0 8px 10px rgba(255, 255, 255, 0.15), inset 0 -8px 10px rgba(0, 0, 0, 0.6), inset 6px 0 12px rgba(0, 0, 0, 0.4), inset -6px 0 12px rgba(0, 0, 0, 0.4), 0 15px 25px rgba(0,0,0,0.2);
+    border: 1px solid #334155; z-index: 5;
+}
+.smart-car-chassis::before {
+    content: ""; position: absolute; top: 42px; bottom: 25px; left: 8px; right: 8px;
+    background: linear-gradient(180deg, #0a0d14 0%, #151b26 40%, #151b26 60%, #0a0d14 100%);
+    border-radius: 20px 20px 8px 8px; border: 2px solid #2a3441; box-shadow: inset 0 5px 12px rgba(255, 255, 255, 0.15); 
+}
+.smart-car-chassis::after {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 40px 40px 15px 15px;
+    box-shadow: inset 15px 4px 10px -10px rgba(255, 255, 255, 0.9), inset -15px 4px 10px -10px rgba(255, 255, 255, 0.9), inset 20px -4px 12px -15px rgba(239, 68, 68, 1), inset -20px -4px 12px -15px rgba(239, 68, 68, 1); 
+    pointer-events: none;
+}
+.smart-tire {
+    width: 14px; height: 36px; border-radius: 4px; position: absolute; background: #10b981; z-index: 1; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+.smart-tire.flat {
+    background: #ef4444; animation: flat-alarm 0.5s infinite alternate; z-index: 10; 
+}
+@keyframes flat-alarm {
+    0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); transform: scale(1); }
+    100% { box-shadow: 0 0 25px rgba(239, 68, 68, 1); transform: scale(1.15); }
+}
+.smart-tire.front_left { top: 32px; left: -8px; }
+.smart-tire.front_right { top: 32px; right: -8px; }
+.smart-tire.rear_left { bottom: 25px; left: -8px; }
+.smart-tire.rear_right { bottom: 25px; right: -8px; }
+</style>
+
+<script>
+// Function called when clicking a specific notification to mark it as read
+window.markAsRead = function(notifId, element) {
+    if (!element.classList.contains('unread')) return;
+
+    fetch('/api/mark_notification_read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ notif_id: notifId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            element.classList.remove('unread');
+            element.style.background = '';
+            element.style.borderLeft = '';
+            element.style.cursor = 'default';
+            element.onclick = null; 
+
+            let badge = document.getElementById('notifBadge');
+            let currentCount = parseInt(badge.textContent) || 0;
+            if (currentCount > 1) {
+                badge.textContent = currentCount - 1;
+            } else {
+                badge.style.display = 'none';
+                badge.textContent = 0;
+            }
+        }
+    })
+    .catch(err => console.error("Error marking notification as read:", err));
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Variables for siren and normal sound tracking (using localStorage for cross-page persistence)
+    let savedSirens = JSON.parse(localStorage.getItem('playedSirens')) || [];
+    const shownSirenIds = new Set(savedSirens);
+    
+    let savedNormalNotifs = JSON.parse(localStorage.getItem('playedNormalNotifs')) || [];
+    const playedNormalNotifIds = new Set(savedNormalNotifs);
+    
+    let sirenTimeout;
+
+    // Function to trigger the siren popup
+    function triggerSiren(id, title, message, isFire) {
+        if (shownSirenIds.has(id)) return; 
+        
+        // Save the ID immediately to localStorage
+        shownSirenIds.add(id);
+        localStorage.setItem('playedSirens', JSON.stringify([...shownSirenIds]));
+
+        const overlay = document.getElementById('sirenAlarmOverlay');
+        const audio = document.getElementById('sirenAudio');
+        const icon = document.getElementById('sirenIcon');
+        
+        document.getElementById('sirenTitle').innerText = title;
+        document.getElementById('sirenMessage').innerText = message;
+
+        if (isFire) {
+            icon.className = 'fa-solid fa-fire fa-beat-fade'; 
+            document.getElementById('sirenAlarmBox').style.borderColor = '#ef4444';
+            document.getElementById('sirenTitle').style.color = '#ef4444';
+        } else {
+            icon.className = 'fa-solid fa-arrows-spin fa-spin'; 
+            document.getElementById('sirenAlarmBox').style.borderColor = '#94a3b8';
+            document.getElementById('sirenTitle').style.color = '#94a3b8';
+        }
+
+        overlay.style.display = 'flex';
+        audio.play().catch(e => console.log('Autoplay blocked by browser. User interaction needed.', e));
+
+        clearTimeout(sirenTimeout);
+        sirenTimeout = setTimeout(hideSiren, 10000);
+    }
+
+    // Function to hide the siren popup
+    function hideSiren() {
+        document.getElementById('sirenAlarmOverlay').style.display = 'none';
+        const audio = document.getElementById('sirenAudio');
+        audio.pause();
+        audio.currentTime = 0; 
+        clearTimeout(sirenTimeout);
+    }
+
+    // Hide siren on click
+    document.getElementById('sirenAlarmOverlay').addEventListener('click', hideSiren);
+
+    const notifTrigger = document.getElementById('notifTrigger');
+    const notifBadge = document.getElementById('notifBadge');
+    const notifContent = document.querySelector('.notif-sidebar-content');
+    
+    // Function to fetch and render notifications
+    function fetchNotifications() {
+        fetch('/api/get_notifications')
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                if(data.unread_count > 0) {
+                    notifBadge.textContent = data.unread_count;
+                    notifBadge.style.display = 'flex';
+                } else {
+                    notifBadge.style.display = 'none';
+                }
+                
+                notifContent.innerHTML = '';
+                if(data.notifications.length === 0) {
+                    notifContent.innerHTML = '<p style="padding:20px; text-align:center; color:#94a3b8;">No messages or alerts found.</p>';
+                } else {
+                    data.notifications.forEach(notif => {
+                        let upperTitle = notif.title.toUpperCase();
+                        let iconHTML = '';
+                        let isEmergency = false;
+                        let titleColor = '';
+
+                        let itemClass = notif.is_read ? 'notif-item' : 'notif-item unread';
+                        let cursorStyle = notif.is_read ? '' : 'cursor: pointer;';
+                        let onClickAttr = notif.is_read ? '' : `onclick="markAsRead(${notif.id}, this)"`;
+
+                        // 1. If the notification is a Tire Alert
+                        if (upperTitle.includes('TIRE_ALERT')) {
+                            let tires = {};
+                            try { tires = JSON.parse(notif.message); } catch(e) {}
+                            
+                            iconHTML = `
+                                <div class="smart-car-chassis" style="transform: scale(0.28); position: absolute;">
+                                   <div class="smart-tire front_left ${tires.front_left || 'full'}"></div>
+                                   <div class="smart-tire front_right ${tires.front_right || 'full'}"></div>
+                                   <div class="smart-tire rear_left ${tires.rear_left || 'full'}"></div>
+                                   <div class="smart-tire rear_right ${tires.rear_right || 'full'}"></div>
+                               </div>
+                            `;
+                            titleColor = '#ef4444';
+                            isEmergency = false; 
+                            notif.title = "⚠️ TIRE PRESSURE ALERT";
+                            notif.message = "Flat tire detected! Click here to view details.";
+                            
+                            // Important: Make the alert always clickable to redirect to reservations page
+                            cursorStyle = 'cursor: pointer;';
+                            let redirectCode = `setTimeout(() => window.location.href='Reservations_page.html', 300);`;
+                            onClickAttr = notif.is_read 
+                                ? `onclick="${redirectCode}"` 
+                                : `onclick="markAsRead(${notif.id}, this); ${redirectCode}"`;
+                        }
+                        // 2. Other environmental emergency and standard notifications
+                        else if (upperTitle.includes('FIRE')) {
+                            iconHTML = '<i class="fa-solid fa-fire" style="color: #ef4444; font-size: 20px;"></i>';
+                            isEmergency = true;
+                            titleColor = '#ef4444';
+                        } else if (upperTitle.includes('TEMPERATURE')) {
+                            iconHTML = '<i class="fa-solid fa-temperature-arrow-up" style="color: #f97316; font-size: 20px;"></i>';
+                            isEmergency = true;
+                            titleColor = '#f97316';
+                        } else if (upperTitle.includes('SMOKE')) {
+                            iconHTML = '<i class="fa-solid fa-smog" style="color: #94a3b8; font-size: 20px;"></i>';
+                            isEmergency = true;
+                            titleColor = '#94a3b8';
+                        } else if (upperTitle.includes('GAS')) {
+                            iconHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #eab308; font-size: 20px;"></i>';
+                            isEmergency = true;
+                            titleColor = '#eab308';
+                        } else if (upperTitle.includes('ACCIDENT')) {
+                            iconHTML = '<i class="fa-solid fa-car-burst" style="color: #ef4444; font-size: 20px;"></i>';
+                            isEmergency = true;
+                            titleColor = '#ef4444';
+                        } else {
+                            iconHTML = '<i class="fa-solid fa-circle-info" style="color: #3b82f6; font-size: 20px;"></i>';
+                            titleColor = '';
+                        }
+
+                        // Style normal and emergency notifications
+                        let customStyle = (isEmergency && !notif.is_read) ? `background: rgba(239, 68, 68, 0.12); border-left: 4px solid ${titleColor || '#ef4444'};` : '';
+                        
+                        // Build the notification HTML block
+                        notifContent.innerHTML += `
+                            <div class="${itemClass}" style="${customStyle} ${cursorStyle}" ${onClickAttr}>
+                                <div class="notif-icon" style="position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                                    ${iconHTML}
+                                </div>
+                                <div class="notif-text">
+                                    <strong style="color: ${titleColor};">${notif.title}</strong>
+                                    <p>${notif.message}</p>
+                                    <span class="notif-time">${notif.time}</span>
+                                </div>
+                            </div>
+                        `;
+
+                        // Sound playback system logic
+                        if (!notif.is_read) {
+                            // Play siren for environmental emergencies
+                            if (isEmergency && (upperTitle.includes('FIRE') || upperTitle.includes('SMOKE') || upperTitle.includes('GAS') || upperTitle.includes('TEMPERATURE'))) {
+                                let isFireTheme = upperTitle.includes('FIRE') || upperTitle.includes('TEMPERATURE');
+                                triggerSiren(notif.id, notif.title, notif.message, isFireTheme);
+                            } 
+                            // Play normal sound for tire or standard alerts
+                            else {
+                                if (!playedNormalNotifIds.has(notif.id)) {
+                                    playedNormalNotifIds.add(notif.id);
+                                    // Save to localStorage to avoid repeating across pages
+                                    localStorage.setItem('playedNormalNotifs', JSON.stringify([...playedNormalNotifIds]));
+                                    
+                                    const normalAudio = document.getElementById('normalNotifAudio');
+                                    normalAudio.play().catch(e => console.log('Autoplay blocked by browser', e));
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        })
+        .catch(err => console.error("Error fetching notifications:", err));
+    }
+
+    // Run fetch immediately and repeat every 5 seconds
+    fetchNotifications();
+    setInterval(fetchNotifications, 5000); 
+
+    // Variable to control the timer and prevent duplicates
+    let markAllReadTimeout;
+
+    // Clicking the bell opens the sidebar and triggers a 5-second timer to mark all as read
+    notifTrigger.addEventListener('click', function() {
+        document.getElementById('notifSidebar').classList.add('active');
+        document.getElementById('notifOverlay').classList.add('active');
+
+        // Get the unread count from the badge
+        let badge = document.getElementById('notifBadge');
+        let currentCount = parseInt(badge.textContent) || 0;
+
+        // If there are new notifications, start a 5-second timer
+        if (currentCount > 0) {
+            clearTimeout(markAllReadTimeout); // Clear timeout in case of multiple clicks
+            
+            markAllReadTimeout = setTimeout(() => {
+                fetch('/api/mark_all_notifications_read', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // 1. Hide the red badge from the bell
+                        badge.style.display = 'none';
+                        badge.textContent = 0;
+                        
+                        // 2. Update UI for all notifications to appear read (remove red background)
+                        document.querySelectorAll('.notif-item.unread').forEach(element => {
+                            element.classList.remove('unread');
+                            element.style.background = '';
+                            element.style.borderLeft = '';
+                            
+                            // Remove hover and click effects from normal notifications
+                            if (!element.innerHTML.includes('TIRE_ALERT')) {
+                                element.style.cursor = 'default';
+                                element.onclick = null;
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.error("Error marking all as read:", err));
+            }, 5000); // 5000 ms = exactly 5 seconds
+        }
+    });
+
+    // Control sidebar closing
+    document.getElementById('closeNotifBtn').addEventListener('click', function(){
+        document.getElementById('notifSidebar').classList.remove('active');
+        document.getElementById('notifOverlay').classList.remove('active');
+    });
+    
+    document.getElementById('notifOverlay').addEventListener('click', function(){
+        document.getElementById('notifSidebar').classList.remove('active');
+        document.getElementById('notifOverlay').classList.remove('active');
+    });
+});
+</script>

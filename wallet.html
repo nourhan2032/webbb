@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Wallet | SmartPark AI</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Urbanist:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="dashboardStyle.css">
+    <link rel="stylesheet" href="walletStyle.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    
+</head>
+
+<body class="dashboard-body">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-car-burst"></i>
+                <span>SmartPark</span>
+            </a>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="user-dashboard.html"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+            <li class="active"><a href="#"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+            <li><a href="vehicles.html"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+            <li><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+            <li class="settings-tab"><a href="settings.html"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+            {% set custom_page_title = 'My Wallet <i class="fa-solid fa-wallet"></i>' %}
+            {% set custom_page_subtitle = 'Check your balance and recharge your account.' %}    
+            {% include 'topbar.html' %}
+
+             <div class="location-section">
+                </div>
+
+
+        <div class="wallet-center-wrapper">
+            <div class="flow-card">
+                
+                <div id="view-overview" class="flow-view active">
+                    <div class="d-flex-between mb-4">
+                        <div class="user-info-badge">
+                            <div class="icon-box-round">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div>
+                                <h3>{{ user.name }}</h3>
+                            
+                            </div>
+                        </div>
+                        <div class="notification-icon"><i class="fa-regular fa-bell"></i></div>
+                    </div>
+
+                    <div class="balance-master">
+                        <div class="b-label">Your Balance</div>
+                        {% set bal_str = "%.2f"|format(user.balance) %}
+                        {% set bal_parts = bal_str.split('.') %}
+                        <div class="b-amount">
+                            <span id="balance-int">{{ bal_parts[0] }}</span><span class="dec">.<span id="balance-dec">{{ bal_parts[1] }}</span></span><span class="currency">EGP</span>
+                        </div>
+                        <button class="btn-balance-add" onclick="showView('view-amount')">
+                            <i class="fa-solid fa-wallet me-2"></i> Add Balance
+                        </button>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="d-flex-between">
+                            <div class="info-left">
+                                <div class="icon-box icon-blue"><i class="fa-regular fa-credit-card"></i></div>
+                                <div>
+                                    <h4 class="info-title">Payment Method</h4>
+                                    <p class="info-sub" id="displayCard">VisaCard - 4375</p>
+                                </div>
+                            </div>
+                            <button class="btn-text" onclick="showView('view-add-card')">Edit</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="view-amount" class="flow-view">
+                    <div class="flow-header">
+                        <button class="btn-back" onclick="showView('view-overview')"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="flow-title">Choose your balance package</h2>
+                    </div>
+
+                    <div class="section-subtitle">Standard</div>
+                    <div class="selection-list mb-3">
+                        <div class="selection-item selected" onclick="selectAmount(this, 50)">
+                            <div class="radio-group">
+                                <div class="custom-radio"></div>
+                                <span class="item-label">50 balance</span>
+                            </div>
+                            <span class="item-value">50 EGP</span>
+                        </div>
+                        <div class="selection-item" onclick="selectAmount(this, 100)">
+                            <div class="radio-group">
+                                <div class="custom-radio"></div>
+                                <span class="item-label">100 balance</span>
+                            </div>
+                            <span class="item-value">100 EGP</span>
+                        </div>
+                        <div class="selection-item" onclick="selectAmount(this, 200)">
+                            <div class="radio-group">
+                                <div class="custom-radio"></div>
+                                <span class="item-label">200 balance</span>
+                            </div>
+                            <span class="item-value">200 EGP</span>
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">Custom</div>
+                    <div class="selection-list mb-4">
+                        <div class="selection-item" onclick="selectAmount(this, 'custom')" id="customOptionItem">
+                            <div class="radio-group">
+                                <div class="custom-radio"></div>
+                                <span class="item-label">Create your own package</span>
+                            </div>
+                        </div>
+                        <div class="custom-input-area" id="customInputWrapper">
+                            <div class="input-icon-wrap">
+                                <input type="number" id="customInput" class="form-control-custom" placeholder="Enter amount (EGP)" min="10">
+                            </div>
+                            <div class="input-hint">* Minimum of 10 EGP</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex-between pt-3 mb-4" style="border-top: 1px solid var(--border-color);">
+                        <div>
+                            <h4 style="font-size: 1rem; font-family: 'Plus Jakarta Sans', sans-serif; margin-bottom: 4px; color: var(--text-main); font-weight: 700;">Auto Recharge</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0; max-width: 280px; font-weight: 600;">Turn on for a seamless riding experience.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary-action" onclick="confirmAmountAndProceed()">
+                        Continue to Payment <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+
+                <div id="view-method" class="flow-view">
+                    <div class="flow-header">
+                        <button class="btn-back" onclick="showView('view-amount')"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="flow-title">Choose your method</h2>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">Some methods require verification before use</p>
+
+                    <div class="badge-status bg-success-light"><i class="fa-solid fa-circle-check me-1"></i> Available Now</div>
+                    <div class="selection-list mb-4">
+                        <div class="selection-item selected" onclick="selectMethod(this, 'visa')">
+                            <div class="radio-group">
+                                <div class="custom-radio"></div>
+                                <div class="method-wrap">
+                                    <div class="method-icon"><i class="fa-brands fa-cc-visa" style="color: #1434CB;"></i></div>
+                                    <span class="item-label">Pay with saved card - 4375</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="badge-status bg-warning-light"><i class="fa-solid fa-shield-halved me-1"></i> Requires verification</div>
+                    <div class="selection-list mb-4">
+                        <div class="selection-item" onclick="selectMethod(this, 'wallet')">
+                            <div class="radio-group">
+                                <div class="custom-radio"></div>
+                                <div class="method-wrap">
+                                    <div class="method-icon wallet"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                    <span class="item-label">Digital Wallets (Vodafone Cash)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary-action" onclick="processFinalPayment()" id="finalPayBtn">
+                        Pay 50 EGP
+                    </button>
+                </div>
+
+                <div id="view-add-card" class="flow-view">
+                    <div class="flow-header">
+                        <button class="btn-back" onclick="showView('view-overview')"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="flow-title">Add New Card</h2>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">Securely link your credit or debit card for automatic gate access.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom: 6px; display: block;">Cardholder Name</label>
+                        <input type="text" class="form-control-custom" placeholder="e.g., Osama Elmihy" style="padding-left: 16px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom: 6px; display: block;">Card Number</label>
+                        <input type="text" class="form-control-custom" id="newCardInput" placeholder="0000 0000 0000 0000" maxlength="19" style="padding-left: 16px;">
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom: 6px; display: block;">Expiry Date</label>
+                            <input type="text" class="form-control-custom" placeholder="MM/YY" maxlength="5" style="padding-left: 16px;">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom: 6px; display: block;">CVV</label>
+                            <input type="password" class="form-control-custom" placeholder="123" maxlength="3" style="padding-left: 16px;">
+                        </div>
+                    </div>
+
+                    <button class="btn-primary-action" onclick="saveNewCard()" id="saveCardBtn">
+                        Save Payment Method
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+    <script src="user.js"></script>
+
+    <script src="walletScript.js"></script>
+</body>
+</html>

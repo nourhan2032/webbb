@@ -1,0 +1,70 @@
+:root {
+    /* Light Theme Variables (SmartPark Light Mode) */
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --primary: #008c85; /* SmartPark Light Accent */
+    --primary-foreground: #ffffff;
+    --secondary: #f8fafc;
+    --muted: #f1f5f9;
+    --muted-foreground: #475569;
+    --border: rgba(0, 0, 0, 0.08);
+    --card: #ffffff;
+    --neon: #00c2b8; /* SmartPark Main Teal */
+    --neon-soft: rgba(0, 194, 184, 0.8);
+    --navy-deep: #05080f;
+    
+    --accent-gradient: linear-gradient(135deg, #00c2b8, #1a6bff);
+    --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    --shadow-glow: 0 8px 24px rgba(0, 140, 133, 0.3);
+    --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+    /* Dark Theme Variables (SmartPark Dark Mode) */
+    --background: #05080f;
+    --foreground: #f8fafc;
+    --primary: #00c2b8; /* SmartPark Dark Accent */
+    --primary-foreground: #05080f;
+    --secondary: #1e293b;
+    --muted: #0f172a;
+    --muted-foreground: #94a3b8;
+    --border: #1e293b;
+    --card: #0f172a;
+    
+    --neon: #00c2b8;
+    --neon-soft: rgba(0, 194, 184, 0.8);
+    --navy-deep: #05080f;
+
+    --accent-gradient: linear-gradient(135deg, #00c2b8, #1a6bff);
+    --hero-gradient: linear-gradient(135deg, #0f172a 0%, #00c2b8 100%);
+    --shadow-glow: 0 8px 24px rgba(0, 194, 184, 0.3);
+    --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.bg-accent-gradient { background: var(--accent-gradient); }
+.bg-hero-gradient { background: var(--hero-gradient); }
+.shadow-glow { box-shadow: var(--shadow-glow); }
+.shadow-card { box-shadow: var(--shadow-card); }
+
+.text-gradient {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Simple Reveal Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -1,0 +1,133 @@
+/* =========================================
+   3. شريط التصفح (Navbar)
+========================================= */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    padding: 20px 50px;
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 0;
+    background: rgba(10, 15, 28, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+    text-decoration: none;
+}
+.logo i {
+    color: var(--primary-color);
+}
+
+nav ul {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 700;
+}
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.3s;
+    position: relative;
+}
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+nav ul li a:hover::after {
+    width: 100%;
+}
+nav ul li a:hover {
+    color: var(--primary-color);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* =========================================
+   4. الأزرار ومبدل الثيم (Buttons & Toggle)
+========================================= */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding-bottom: 4px;
+    transition: 0.3s;
+}
+.theme-toggle i {
+    color: #ffd43b;
+    font-size: 15px;
+}
+.theme-toggle span {
+    font-size: 15px;
+    font-weight: 500;
+    color: white;
+}
+
+.sign-btn {
+    padding: 10px 32px;
+    border-radius: 50px;
+    background: rgba(0, 242, 254, 0.05);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+.sign-btn:hover {
+    background: var(--primary-color);
+    color: #05080f;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+    transform: translateY(-2px); 
+}
+/* =========================================
+   تعديلات الموبايل للـ Header
+========================================= */
+@media screen and (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        flex-direction: column; /* بيخلي اللوجو واللينكات تحت بعض */
+        gap: 15px;
+    }
+    
+    nav ul {
+        gap: 15px;
+        font-size: 15px;
+        flex-wrap: wrap; /* بيخلي اللينكات تنزل سطر جديد لو الشاشة ضيقة */
+        justify-content: center;
+        padding: 0;
+    }
+    
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+    }
+}

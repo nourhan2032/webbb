@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vehicles | SmartPark AI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="dashboardStyle.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-car-burst"></i>
+                    <span>SmartPark</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="/user-dashboard"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+                <li><a href="/wallet"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+                <li class="active"><a href="/vehicles"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+                <li><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+                <li class="settings-tab"><a href="settings.html"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
+
+            </ul>
+            <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+        </aside>
+
+        <main class="main-content">
+            {% set custom_page_title = 'My Vehicles 🚗' %}
+            {% set custom_page_subtitle = 'Manage your registered cars and add new vehicles.' %}
+            {% include 'topbar.html' %}
+
+             <div class="location-section">
+                </div>
+
+
+            <div class="vehicles-section" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Registered Plates</h3>
+                    <button class="btn-primary-action" onclick="addNewVehicle()" style="width: auto; padding: 10px 20px;">
+                        <i class="fa-solid fa-plus"></i> Add New Vehicle
+                    </button>
+                </div>
+
+                <div class="vehicles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                    {% for car in cars %}
+                    <div class="garage-card" style="text-align: center; padding: 20px;">
+                        <i class="fa-solid fa-car-rear" style="font-size: 2.5rem; color: #00c2b8; margin-bottom: 15px;"></i>
+                        <h4 style="font-size: 1.5rem; letter-spacing: 2px;">{{ car.plate_no }}</h4>
+                        <p style="color: #64748b; font-size: 0.9rem;">Status: <span style="color: #10b981;">Active</span></p>
+                    </div>
+                    {% else %}
+                    <p style="color: #64748b;">No vehicles registered yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function addNewVehicle() {
+            Swal.fire({
+                title: 'Add New Vehicle',
+                text: 'Enter the new license plate number:',
+                input: 'text',
+                inputPlaceholder: 'e.g. ن و ر 1234',
+                showCancelButton: true,
+                confirmButtonColor: '#00c2b8',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Save Vehicle',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You need to write a plate number!'
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // إرسال النمرة للباك إند
+                    fetch('/api/add_vehicle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ plate_number: result.value })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire('Added!', data.message, 'success')
+                            .then(() => {
+                                window.location.reload(); // تحديث الصفحة لعرض العربية الجديدة
+                            });
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Something went wrong!', 'error');
+                    });
+                }
+            });
+        }
+    </script>
+        <script src="user.js"></script>
+
+</body>
+</html>

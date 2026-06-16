@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reservations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS بتاعك كامل هنا */
+        body { background-color: #0a1424; color: white; font-family: 'Urbanist', sans-serif; padding: 50px; }
+        .btn-cyan { background: #00c2b8; color: #fff; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .btn-danger { background: #ef4444; color: #fff; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .btn-outline { background: transparent; border: 1px solid #aaa; color: #fff; padding: 8px 22px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-box { background-color: #111b29; border: 1px solid rgba(0, 194, 184, 0.3); border-radius: 16px; padding: 25px 30px; width: 90%; max-width: 400px; transform: translateY(-20px); transition: transform 0.3s ease; }
+        .modal-overlay.show .modal-box { transform: translateY(0); }
+        .modal-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
+        .cyan-price { color: #00c2b8; font-size: 1.6rem; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+    <button class="btn-cyan" id="action-btn">Check Out</button>
+
+    <div id="cancel-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">Cancel Reservation</h2>
+            <p>Are you sure you want to cancel the reservation for Plate: <span id="cancel-plate" style="color: #00c2b8;"></span>?</p>
+            <div class="modal-buttons">
+                <button onclick="closeModal('cancel-modal')" class="btn-outline">Close</button>
+                <button id="confirm-cancel-btn" class="btn-danger">Confirm Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">Check Out</h2>
+            <p>Your current session for Plate <span id="checkout-plate" style="color: #00c2b8;"></span> has ended.</p>
+            <p style="margin-top: 15px;">Total Amount: <span id="checkout-price" class="cyan-price"></span></p>
+            <div class="modal-buttons">
+                <button onclick="closeModal('checkout-modal')" class="btn-outline">Close</button>
+                <button id="confirm-checkout-btn" class="btn-cyan">Pay & Check Out</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JS بتاعك كامل هنا
+        document.addEventListener('DOMContentLoaded', () => {
+            const reservation = {
+                id: 123,
+                plate_no: "ASM 1234",
+                reserve_status: "occupied", // جربي تغيريها لـ reserved هنا في التست
+                estimated_price: "20.00 EGP"
+            };
+
+            const actionBtn = document.getElementById('action-btn');
+
+            if (actionBtn) {
+                if (reservation.reserve_status === 'reserved') {
+                    actionBtn.innerText = 'Cancel';
+                    actionBtn.className = 'btn-danger';
+                    actionBtn.onclick = function() { openCancelModal(reservation); };
+                } else if (reservation.reserve_status === 'occupied') {
+                    actionBtn.innerText = 'Check Out';
+                    actionBtn.className = 'btn-cyan';
+                    actionBtn.onclick = function() { openCheckoutModal(reservation); };
+                }
+            }
+        });
+
+        function openCancelModal(data) {
+            document.getElementById('cancel-modal').classList.add('show');
+            document.getElementById('cancel-plate').innerText = data.plate_no;
+        }
+
+        function openCheckoutModal(data) {
+            document.getElementById('checkout-modal').classList.add('show');
+            document.getElementById('checkout-plate').innerText = data.plate_no;
+            document.getElementById('checkout-price').innerText = data.estimated_price;
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+    </script>
+</body>
+</html>

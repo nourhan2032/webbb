@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — Smart Parking & Safety Management System</title>
+    
+    <meta name="description" content="Discover the Smart Parking & Safety Management System: an AI-powered platform that combines Computer Vision and IoT to solve parking, ensure 24/7 vehicle safety, and provide inclusive access.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--background)',
+                        foreground: 'var(--foreground)',
+                        primary: 'var(--primary)',
+                        'primary-foreground': 'var(--primary-foreground)',
+                        secondary: 'var(--secondary)',
+                        muted: 'var(--muted)',
+                        'muted-foreground': 'var(--muted-foreground)',
+                        border: 'var(--border)',
+                        card: 'var(--card)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="dashboardStyle.css">
+    <link rel="stylesheet" href="about.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    
+    <style>
+        .toggle-track {
+           
+           
+            
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-knob {
+            
+             position: relative;
+
+            cursor: pointer;
+
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+
+            display: flex;
+
+            align-items: center;
+        }
+
+        /* حركة الزر في الوضع النهاري (Light Mode) */
+       
+    </style>
+</head>
+<body class="min-h-screen relative">
+
+    <header class="md:hidden fixed top-0 inset-x-0 z-40 h-16 backdrop-blur-md bg-background/70 border-b border-border/60 flex items-center px-6">
+        <button id="mobile-menu-btn" class="text-foreground focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+        <span class="ml-4 font-semibold tracking-tight text-lg text-foreground">SmartPark</span>
+    </header>
+
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header flex justify-between items-center px-4">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-car-burst"></i>
+                <span>SmartPark</span>
+            </a>
+            
+            <button id="close-sidebar-btn" class="md:hidden text-muted-foreground hover:text-foreground transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <ul class="sidebar-menu mt-6">
+            <li><a href="user-dashboard.html"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+            <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+            <li><a href="vehicles.html"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+            <li><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+            <li><a href="payment.html"><i class="fa-solid fa-ticket"></i> Digital Ticket</a></li>
+        </ul>
+
+        
+    </aside>
+
+    <main id="main" class="md:ml-64 transition-all duration-300 relative">
+        
+        <div class="absolute top-6 right-6 md:right-12 z-50 flex items-center gap-4">
+            <div class="toggle-track shadow-lg" id="themeToggle">
+                <div class="toggle-knob">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+            </div>
+        </div>
+
+        <section aria-labelledby="hero-title" class="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden bg-hero-gradient text-white">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background dark:to-[#05080f] to-[#ffffff]"></div>
+            <div class="relative mx-auto max-w-5xl px-6 text-center">
+                <div class="reveal inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[#00f0ff]">
+                    <i class="fa-solid fa-sparkles"></i> Graduation Project
+                </div>
+                <h1 id="hero-title" class="reveal mt-6 text-5xl md:text-7xl font-bold tracking-tight">
+                    About <span class="text-gradient">Our Project</span>
+                </h1>
+                <p class="reveal mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+                    Revolutionizing parking safety and efficiency through advanced Computer Vision and IoT.
+                </p>
+                
+                <div class="reveal mt-10 flex flex-wrap items-center justify-center gap-3 md:gap-4">
+    <a href="#services" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-medium text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+        Explore our services <i class="fa-solid fa-arrow-right"></i>
+    </a>
+
+    <a href="#team" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-medium text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+        Meet the team
+    </a>
+    <a href="#mission" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-medium text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+        Mission
+    </a>
+    <a href="#supervision" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-medium text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+        Supervision
+    </a>
+    <a href="#stack" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-medium text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+        Stack
+    </a>
+    <a href="#contact" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-medium text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+        Contact
+    </a>
+</div>
+            </div>
+        </section>
+
+        <section id="mission" class="py-24 md:pt-32 md:pb-16">
+            <div class="mx-auto max-w-6xl px-6">
+                <div class="max-w-2xl mx-auto text-center mb-14">
+                    <p class="reveal text-xs uppercase tracking-[0.2em] text-[#00f0ff] font-medium">Mission & Vision</p>
+                    <h2 class="reveal mt-3 text-3xl md:text-4xl font-bold tracking-tight text-primary">Safer, smarter, inclusive parking</h2>
+                </div>
+                
+                <div class="mt-12 grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="reveal space-y-6 text-lg text-muted-foreground leading-relaxed">
+                        <p>
+                            Drivers today struggle to find available parking, leading to traffic congestion, wasted fuel, and lost time across busy campuses and cities. Our mission is to solve this by unifying Computer Vision and IoT into a single intelligent layer.
+                        </p>
+                        <p>
+                            We provide a seamless system that helps drivers find and access parking quickly with automated gates and live spot availability. Beyond convenience, our system ensures <span class="text-primary font-semibold">24/7 continuous monitoring</span> through advanced <span class="text-primary font-semibold">YOLOv8</span> models, keeping every vehicle under watch and detecting hazards or unauthorized access in real time.
+                        </p>
+                        <p>
+                            Most importantly, our infrastructure is <span class="text-primary font-semibold">inclusive by design</span>, featuring smart-managed parking spots dedicated to people with special needs, ensuring fair, reliable, and respectful access for everyone.
+                        </p>
+                    </div>
+
+                    <div class="reveal relative rounded-2xl overflow-hidden shadow-card group" style="transition-delay: 200ms;">
+                        <div class="absolute inset-0 bg-accent-gradient opacity-20 group-hover:opacity-10 transition-opacity z-10 duration-500"></div>
+                        <img src="https://images.unsplash.com/photo-1573348722427-f1d6819fdf98?q=80&w=1000&auto=format&fit=crop" 
+                             alt="Smart Parking Garage" 
+                             class="w-full h-[450px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute bottom-6 left-6 z-20 bg-background/90 backdrop-blur-sm border border-border px-4 py-2 rounded-full shadow-lg flex items-center gap-3">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-[#00f0ff]"></span>
+                            </span>
+                            <span class="text-sm font-medium text-primary">Live Monitoring Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-16 md:py-24 bg-background">
+            <div class="mx-auto max-w-6xl px-6">
+                <div class="max-w-2xl mx-auto text-center mb-14">
+                    <p class="reveal text-xs uppercase tracking-[0.2em] text-[#00f0ff] font-medium">Core Features</p>
+                    <h2 class="reveal mt-3 text-3xl md:text-4xl font-bold tracking-tight text-primary">What our system provides</h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="reveal group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors mb-6">
+                            <i class="fa-solid fa-road-barrier text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-3">Automated Gate Access</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            Seamless entry and exit powered by IoT-controlled barriers, verifying authorized vehicles in real time.
+                        </p>
+                    </div>
+
+                    <div class="reveal group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300" style="transition-delay: 100ms;">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors mb-6">
+                            <i class="fa-solid fa-id-card-clip text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-3">License Plate Recognition</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            High-accuracy OCR pipelines identify and log vehicles instantly, supporting frictionless access and audit trails.
+                        </p>
+                    </div>
+
+                    <div class="reveal group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300" style="transition-delay: 200ms;">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors mb-6">
+                            <i class="fa-solid fa-car-burst text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-3">Tire Safety & Hazard Detection</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            Custom-trained YOLOv8 models analyze live camera feeds to flag worn tires and on-site hazards before they escalate.
+                        </p>
+                    </div>
+
+                    <div class="reveal group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300" style="transition-delay: 300ms;">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors mb-6">
+                            <i class="fa-solid fa-wheelchair text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-3">Accessibility Support</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            Dedicated smart parking spots and accessible routing ensuring inclusive and prioritized access for people with disabilities.
+                        </p>
+                    </div>
+
+                    <div class="reveal group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300" style="transition-delay: 400ms;">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors mb-6">
+                            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-3">Accident Detection</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            Immediate AI-driven detection and automated alerts for any in-lot collisions, ensuring rapid response to emergencies.
+                        </p>
+                    </div>
+
+                    <div class="reveal group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300" style="transition-delay: 500ms;">
+                        <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors mb-6">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-3">Dynamic Pricing</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            Automated fare adjustments based on real-time demand, parking availability, and vehicle stay duration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="team" class="py-24 md:py-32 bg-secondary/40">
+            <div class="mx-auto max-w-6xl px-6">
+                <div class="max-w-2xl mx-auto text-center mb-14">
+                    <p class="reveal text-xs uppercase tracking-[0.2em] text-[#00f0ff] font-medium">The Team</p>
+                    <h2 class="reveal mt-3 text-3xl md:text-4xl font-bold tracking-tight text-primary">Meet the engineers behind the system</h2>
+                </div>
+                
+                <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <li class="reveal group rounded-2xl border border-border bg-card p-8 text-center shadow-card hover:-translate-y-1 hover:shadow-glow hover:border-[#00f0ff] transition-all duration-300">
+                        <div class="relative mx-auto h-24 w-24">
+                            <div class="absolute inset-0 rounded-full bg-accent-gradient blur-xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+                            <div class="relative h-24 w-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-semibold border-4 border-background">O</div>
+                            <span class="absolute -top-2 -right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent-gradient text-[#0a0f25] shadow-glow" title="Team Leader">
+                                <i class="fa-solid fa-crown text-sm"></i>
+                            </span>
+                        </div>
+                        <h3 class="mt-6 text-xl font-semibold text-primary">Osama</h3>
+                        <p class="mt-1 text-sm font-medium text-[#00f0ff]">Team Leader</p>
+                        <p class="mt-4 text-sm text-muted-foreground leading-relaxed">Leads the project vision, coordinates the team, and drives technical architecture decisions end-to-end.</p>
+                    </li>
+                    <li class="reveal group rounded-2xl border border-border bg-card p-8 text-center shadow-card hover:-translate-y-1 hover:shadow-glow hover:border-[#00f0ff] transition-all duration-300">
+                        <div class="relative mx-auto h-24 w-24">
+                            <div class="absolute inset-0 rounded-full bg-accent-gradient blur-xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+                            <div class="relative h-24 w-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-semibold border-4 border-background">N</div>
+                        </div>
+                        <h3 class="mt-6 text-xl font-semibold text-primary">Nourhan</h3>
+                        <p class="mt-1 text-sm font-medium text-[#00f0ff]">Computer Vision Engineer</p>
+                        <p class="mt-4 text-sm text-muted-foreground leading-relaxed">Designs YOLOv8 detection pipelines and integrates vision models with the IoT infrastructure.</p>
+                    </li>
+                    <li class="reveal group rounded-2xl border border-border bg-card p-8 text-center shadow-card hover:-translate-y-1 hover:shadow-glow hover:border-[#00f0ff] transition-all duration-300">
+                        <div class="relative mx-auto h-24 w-24">
+                            <div class="absolute inset-0 rounded-full bg-accent-gradient blur-xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+                            <div class="relative h-24 w-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-semibold border-4 border-background">H</div>
+                        </div>
+                        <h3 class="mt-6 text-xl font-semibold text-primary">Hagar</h3>
+                        <p class="mt-1 text-sm font-medium text-[#00f0ff]">Software & OCR Engineer</p>
+                        <p class="mt-4 text-sm text-muted-foreground leading-relaxed">Builds the OCR license-plate recognition pipeline and the interfaces orchestrating the system.</p>
+                    </li>
+                    <li class="reveal group rounded-2xl border border-border bg-card p-8 text-center shadow-card hover:-translate-y-1 hover:shadow-glow hover:border-[#00f0ff] transition-all duration-300">
+                        <div class="relative mx-auto h-24 w-24">
+                            <div class="absolute inset-0 rounded-full bg-accent-gradient blur-xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+                            <div class="relative h-24 w-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-semibold border-4 border-background">Y</div>
+                        </div>
+                        <h3 class="mt-6 text-xl font-semibold text-primary">Yusuf</h3>
+                        <p class="mt-1 text-sm font-medium text-[#00f0ff]">IoT & Embedded Engineer</p>
+                        <p class="mt-4 text-sm text-muted-foreground leading-relaxed">Handles Raspberry Pi integration, gate control hardware, and the real-time sensor pipeline.</p>
+                    </li>
+                    <li class="reveal group rounded-2xl border border-border bg-card p-8 text-center shadow-card hover:-translate-y-1 hover:shadow-glow hover:border-[#00f0ff] transition-all duration-300">
+                        <div class="relative mx-auto h-24 w-24">
+                            <div class="absolute inset-0 rounded-full bg-accent-gradient blur-xl opacity-40 group-hover:opacity-80 transition-opacity"></div>
+                            <div class="relative h-24 w-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-semibold border-4 border-background">Y</div>
+                        </div>
+                        <h3 class="mt-6 text-xl font-semibold text-primary">Yoana</h3>
+                        <p class="mt-1 text-sm font-medium text-[#00f0ff]">Systems & UX Engineer</p>
+                        <p class="mt-4 text-sm text-muted-foreground leading-relaxed">Owns the user-facing experience, data flows, and quality across the smart parking platform.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="supervision" class="py-24 md:py-32">
+            <div class="mx-auto max-w-5xl px-6">
+                <div class="max-w-2xl mx-auto text-center mb-14">
+                    <p class="reveal text-xs uppercase tracking-[0.2em] text-[#00f0ff] font-medium">Acknowledgments</p>
+                    <h2 class="reveal mt-3 text-3xl md:text-4xl font-bold tracking-tight text-primary">Academic supervision & gratitude</h2>
+                </div>
+
+                <ul class="grid sm:grid-cols-3 gap-6">
+                    <li class="reveal flex flex-col items-center text-center rounded-2xl border border-border bg-card p-6 shadow-card hover:border-[#00f0ff] transition-colors">
+                        <div class="h-14 w-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center">
+                            <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                        </div>
+                        <p class="mt-4 text-xs uppercase tracking-wider text-muted-foreground">Project Advisor</p>
+                        <h3 class="mt-1 text-lg font-semibold text-primary">Dr. Mohamed Hussein</h3>
+                    </li>
+                    <li class="reveal flex flex-col items-center text-center rounded-2xl border border-border bg-card p-6 shadow-card hover:border-[#00f0ff] transition-colors" style="transition-delay: 100ms;">
+                        <div class="h-14 w-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center">
+                            <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                        </div>
+                        <p class="mt-4 text-xs uppercase tracking-wider text-muted-foreground">Project Advisor</p>
+                        <h3 class="mt-1 text-lg font-semibold text-primary">Dr. Mohamed El-Sayed</h3>
+                    </li>
+                    <li class="reveal flex flex-col items-center text-center rounded-2xl border border-border bg-card p-6 shadow-card hover:border-[#00f0ff] transition-colors" style="transition-delay: 200ms;">
+                        <div class="h-14 w-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center">
+                            <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                        </div>
+                        <p class="mt-4 text-xs uppercase tracking-wider text-muted-foreground">Project Advisor</p>
+                        <h3 class="mt-1 text-lg font-semibold text-primary">Dr. Ahmed Samir</h3>
+                    </li>
+                </ul>
+
+                <div class="reveal mt-8 relative overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-10 shadow-lg">
+    <div class="absolute inset-0 bg-gradient-to-br from-[#00c2b8]/5 to-transparent"></div>
+    
+    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#00c2b8]"></div>
+
+    <p class="text-sm uppercase tracking-[0.2em] text-[#00c2b8] font-bold">With gratitude</p>
+    
+    <p class="relative mt-4 text-lg md:text-xl leading-relaxed text-foreground/90">
+        We sincerely thank <span class="font-semibold text-primary">Dr. Mohamed Hussein</span>, 
+        <span class="font-semibold text-primary">Dr. Mohamed El-Sayed</span>, and 
+        <span class="font-semibold text-primary">Dr. Ahmed Samir</span> for their invaluable guidance, 
+        thoughtful feedback, and continuous support throughout the development of this project.
+    </p>
+</div>
+        </section>
+
+        <section id="stack" class="py-24 md:py-32 bg-secondary/40">
+            <div class="mx-auto max-w-5xl px-6">
+                <div class="max-w-2xl mx-auto text-center mb-14">
+                    <p class="reveal text-xs uppercase tracking-[0.2em] text-[#00f0ff] font-medium">Technology Stack</p>
+                    <h2 class="reveal mt-3 text-3xl md:text-4xl font-bold tracking-tight text-primary">Engineered with modern tools</h2>
+                </div>
+                
+                <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 md:gap-6">
+                    <li class="reveal group relative rounded-2xl border border-border bg-card p-6 lg:p-8 text-center hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300 md:col-span-2">
+                        <div class="mx-auto inline-flex h-12 w-12 lg:h-14 lg:w-14 items-center justify-center rounded-2xl bg-secondary text-primary group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors">
+                            <i class="fa-solid fa-server text-xl lg:text-2xl"></i>
+                        </div>
+                        <h3 class="mt-4 font-semibold text-primary">Flask</h3>
+                        <p class="mt-1 text-xs text-muted-foreground">Python API Server</p>
+                    </li>
+                    <li class="reveal group relative rounded-2xl border border-border bg-card p-6 lg:p-8 text-center hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300 md:col-span-2" style="transition-delay: 100ms;">
+                        <div class="mx-auto inline-flex h-12 w-12 lg:h-14 lg:w-14 items-center justify-center rounded-2xl bg-secondary text-primary group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors">
+                            <i class="fa-brands fa-raspberry-pi text-xl lg:text-2xl"></i>
+                        </div>
+                        <h3 class="mt-4 font-semibold text-primary">Raspberry Pi</h3>
+                        <p class="mt-1 text-xs text-muted-foreground">IoT Controller</p>
+                    </li>
+                    <li class="reveal group relative rounded-2xl border border-border bg-card p-6 lg:p-8 text-center hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300 md:col-span-2" style="transition-delay: 200ms;">
+                        <div class="mx-auto inline-flex h-12 w-12 lg:h-14 lg:w-14 items-center justify-center rounded-2xl bg-secondary text-primary group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors">
+                            <i class="fa-solid fa-camera text-xl lg:text-2xl"></i>
+                        </div>
+                        <h3 class="mt-4 font-semibold text-primary">YOLOv8</h3>
+                        <p class="mt-1 text-xs text-muted-foreground">Computer Vision Model</p>
+                    </li>
+                    <li class="reveal group relative rounded-2xl border border-border bg-card p-6 lg:p-8 text-center hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300 md:col-start-2 md:col-span-2" style="transition-delay: 300ms;">
+                        <div class="mx-auto inline-flex h-12 w-12 lg:h-14 lg:w-14 items-center justify-center rounded-2xl bg-secondary text-primary group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors">
+                            <i class="fa-solid fa-microchip text-xl lg:text-2xl"></i>
+                        </div>
+                        <h3 class="mt-4 font-semibold text-primary">ESP32</h3>
+                        <p class="mt-1 text-xs text-muted-foreground">Microcontroller Node</p>
+                    </li>
+                    <li class="reveal group relative rounded-2xl border border-border bg-card p-6 lg:p-8 text-center hover:-translate-y-1 hover:border-[#00f0ff] transition-all duration-300 md:col-span-2" style="transition-delay: 400ms;">
+                        <div class="mx-auto inline-flex h-12 w-12 lg:h-14 lg:w-14 items-center justify-center rounded-2xl bg-secondary text-primary group-hover:bg-accent-gradient group-hover:text-[#0a0f25] transition-colors">
+                            <i class="fa-solid fa-tower-broadcast text-xl lg:text-2xl"></i>
+                        </div>
+                        <h3 class="mt-4 font-semibold text-primary">Sensors</h3>
+                        <p class="mt-1 text-xs text-muted-foreground">Data Acquisition</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="contact" class="py-24 md:py-32">
+            <div class="mx-auto max-w-6xl px-6">
+                <div class="max-w-2xl mx-auto text-center mb-14">
+                    <p class="reveal text-xs uppercase tracking-[0.2em] text-[#00f0ff] font-medium">Contact</p>
+                    <h2 class="reveal mt-3 text-3xl md:text-4xl font-bold tracking-tight text-primary">Get in touch with the team</h2>
+                </div>
+
+                <div class="grid lg:grid-cols-5 gap-8">
+                    <aside class="reveal lg:col-span-2 rounded-2xl border border-border bg-card p-8 shadow-card">
+                        <h3 class="text-lg font-semibold text-primary">Project contact</h3>
+                        <p class="mt-2 text-sm text-muted-foreground">Reach out to the SmartPark team — we usually respond within a few days.</p>
+                        <ul class="mt-6 space-y-4 text-sm">
+                            <li class="flex items-start gap-3">
+                                <span class="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </span>
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider text-muted-foreground">Email</p>
+                                    <a href="mailto:smartpark.project@example.com" class="font-medium text-foreground hover:text-[#00f0ff] transition-colors">smartpark.project@example.com</a>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </span>
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider text-muted-foreground">Location</p>
+                                    <p class="font-medium text-foreground">University Campus</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </aside>
+
+                    <form id="contact-form" class="reveal lg:col-span-3 rounded-2xl border border-border bg-card p-8 shadow-card space-y-5">
+                        <h3 class="text-lg font-semibold text-primary">Send a message</h3>
+                        <div class="grid sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-foreground">Name</label>
+                                <input id="name" type="text" required class="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-[#00f0ff]" placeholder="Your full name">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-foreground">Email</label>
+                                <input id="email" type="email" required class="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-[#00f0ff]" placeholder="you@example.com">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-foreground">Message</label>
+                            <textarea id="message" required rows="5" class="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-[#00f0ff]" placeholder="How can we help?"></textarea>
+                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <p id="form-status" class="text-sm text-[#00f0ff] min-h-5"></p>
+                            <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-6 py-3 text-sm font-semibold text-[#0a0f25] shadow-glow hover:scale-[1.02] transition-transform">
+                                Send message <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="md:ml-64 border-t border-border py-10 transition-all duration-300">
+        <div class="mx-auto max-w-6xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+            <div class="flex items-center gap-2">
+                <div class="h-6 w-6 rounded-md bg-accent-gradient"></div>
+                <span>SmartPark — Smart Parking & Safety Management System</span>
+            </div>
+            <p>© 2026 Graduation Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const toggleBtn = document.getElementById("themeToggle");
+        const htmlElement = document.documentElement;
+
+        // دالة لضبط شكل الزر بناءً على الوضع الحالي (تم التصحيح لمنع العكس)
+        function setKnobState(isLight) {
+            if (toggleBtn) {
+                if (isLight) {
+                    // إنتِ في الوضع النهاري = اعرض شمس
+                    toggleBtn.innerHTML = '<div class="toggle-knob"><i class="fa-solid fa-sun" style="color: #f39c12;"></i></div>';
+                } else {
+                    // إنتِ في الوضع الليلي = اعرض قمر
+                    toggleBtn.innerHTML = '<div class="toggle-knob"><i class="fa-solid fa-moon"></i></div>';
+                }
+            }
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", () => {
+                // تبديل الأوضاع
+                document.body.classList.toggle("light-mode");
+                htmlElement.classList.toggle('dark');
+                
+                const isLight = document.body.classList.contains("light-mode");
+                setKnobState(isLight);
+            });
+        }
+
+        // تشغيل الدالة أول ما الصفحة تفتح عشان تظبط شكل الأيقونة صح
+        setKnobState(document.body.classList.contains("light-mode"));
+
+        // تشغيل وإغلاق السايد بار (موبايل)
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        function toggleSidebar() {
+            if (sidebar) sidebar.classList.toggle('-translate-x-full');
+        }
+
+        if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleSidebar);
+        if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', toggleSidebar);
+
+        // كود تحريك العناصر عند النزول بالماوس
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); 
+
+        // إرسال نموذج الاتصال
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                formStatus.textContent = "Thanks! Your message has been sent.";
+                contactForm.reset();
+                setTimeout(() => {
+                    formStatus.textContent = "";
+                }, 4000);
+            });
+        }
+    </script>
+</body>
+</html>

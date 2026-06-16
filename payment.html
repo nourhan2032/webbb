@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | SmartPark AI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="dashboardStyle.css">
+    <link rel="stylesheet" href="paymentStyle.css"> 
+    <link rel="stylesheet" href="walletStyle.css">
+
+    <link rel="stylesheet" href="header.css">
+
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-car-burst"></i><span>SmartPark</span>
+                </a>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="user-dashboard.html"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+                <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+                <li><a href="vehicles.html"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+                <li><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+                <li class="settings-tab"><a href="settings.html"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
+
+            </ul>
+            <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {% set custom_page_title = 'Digital Ticket <i class="fa-solid fa-ticket-simple"></i>' %}
+            <!-- Top Bar -->
+            {% include 'topbar.html' %}
+
+             <div class="location-section">
+                </div>
+            <!-- التعديل الإجباري هنا: حطينا مسافة بالسالب و !important عشان نتخطى أي ستايل في الـ CSS بيعطلنا -->
+            <div class="ticket-wrapper" style="display: flex; justify-content: center; margin-top: -30px !important;">
+                <div class="ticket-container">
+                    <div class="ticket-header">
+                        <i class="fa-solid fa-circle-check text-success check-icon"></i>
+                        <h2>Booking Confirmed!</h2>
+                        <p>Your smart parking slot is reserved successfully.</p>
+                    </div>
+
+                    <div class="ticket-details">
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fa-solid fa-building"></i> Garage</span>
+                            <span class="detail-value" id="summary-garage">Loading...</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fa-solid fa-map-pin"></i> Selected Slot</span>
+                            <span class="detail-value highlight-slot" id="summary-slot">--</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fa-solid fa-car"></i> Vehicle Plate</span>
+                            <span class="detail-value" id="summary-vehicle">--</span>
+                        </div>
+
+                        <div class="detail-divider"></div>
+
+                        <div class="detail-item total-row">
+                            <span class="detail-label">Total Amount</span>
+                            <span class="detail-value total-price" id="summary-price">0.00 EGP</span>
+                        </div>
+                    </div>
+
+                    <div class="ticket-footer">
+                        <button id="startNavigationBtn" class="btn-primary-action">
+                            <i class="fa-solid fa-location-arrow"></i> Start Live Navigation
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="user.js"></script>
+    <script src="payment.js"></script>
+</body>
+</html>

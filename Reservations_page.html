@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservations | SmartPark AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="dashboardStyle.css">
+    <link rel="stylesheet" href="Reservaion.css">
+
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-car-burst"></i>
+                    <span>SmartPark</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="user-dashboard.html"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+                
+                <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+                
+                <li><a href="vehicles.html"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+                
+                <li class="active"><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+                <li class="settings-tab"><a href="settings.html"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+        </aside>
+
+        <main class="main-content">
+            {% set custom_page_title = 'My Reservations 📅' %}
+            {% set custom_page_subtitle = 'Manage and track your active and past garage bookings.' %}               
+            {% include 'topbar.html' %}
+
+             <div class="location-section">
+                </div>
+
+            <div class="history-page-wrapper">
+                
+                {% if logs|length == 0 %}
+                    <div style="text-align: center; margin-top: 60px;">
+                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 4rem; color: #334155; margin-bottom: 20px;"></i>
+                        <h3 style="color: white; font-size: 1.5rem;">No Reservations Found</h3>
+                        <p style="color: #94a3b8; margin-top: 10px;">You haven't made any parking reservations yet.</p>
+                        <a href="user-dashboard.html" class="btn-cyan" style="display: inline-block; margin-top: 20px; text-decoration: none; padding: 10px 25px; border-radius: 8px;">Book a Spot Now</a>
+                    </div>
+                {% else %}
+
+                    <h3 class="res-section-title">Current Reservation</h3>
+                    
+                    {% set active_count = namespace(value=0) %}
+                    {% for log in logs %}
+                        {% if log.reserv_status in ['active', 'reserved', 'occupied'] %}
+                            {% set active_count.value = active_count.value + 1 %}
+                            <div class="history-box current-box">
+                                <div class="split-row pb-15">
+                                    <div class="status-active"><i class="fa-solid fa-circle-dot"></i> {{ log.reserv_status|capitalize }} </div>
+                                    
+                                    {% if log.reserv_status != 'occupied' %}
+                                    <div class="time-text">
+                                        {% if log.created_at %}
+                                            {{ log.created_at.strftime('%I:%M %p') }}
+                                        {% else %}
+                                            --:--
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px 0 30px;">
+                                    <div class="details-stack">
+                                        <p><i class="fa-solid fa-location-dot"></i> {{ log.slot.garage.name if log.slot and log.slot.garage else 'Unknown Garage' }}</p>
+                                        <p><i class="fa-solid fa-car"></i> Plate No: {{ log.car.plate_no if log.car else 'N/A' }}</p>
+                                        <p><i class="fa-solid fa-layer-group"></i> Spot Type: {{ log.Spot_Type|capitalize }}</p>
+                                        <p><i class="fa-solid fa-square-parking"></i> Spot No: {{ log.slot.slot_name if log.slot else 'N/A' }}</p>
+                                        
+                                        {% if log.reserv_status == 'occupied' %}
+                                            <p><i class="fa-solid fa-stopwatch text-cyan"></i> Live Time: 
+                                                <strong class="live-timer" data-id="{{ log.reserv_id }}" data-price="{{ log.Reserved_hour_price }}" id="live-time-{{ log.reserv_id }}" style="color: #00c2b8;">{{ log.live_duration }}</strong>
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if log.tire_condition and log.reserv_status == 'occupied' %}
+                                    <div class="tire-status-wrapper" title="Live Tire Status">
+                                        <div class="smart-car-chassis">
+                                            <div class="smart-tire front_left {{ log.tire_condition.get('front_left', 'full') }}"></div>
+                                            <div class="smart-tire front_right {{ log.tire_condition.get('front_right', 'full') }}"></div>
+                                            <div class="smart-tire rear_left {{ log.tire_condition.get('rear_left', 'full') }}"></div>
+                                            <div class="smart-tire rear_right {{ log.tire_condition.get('rear_right', 'full') }}"></div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+
+                                <div class="split-row pt-15">
+                                    <div class="price-inline">
+                                        {% if log.reserv_status == 'occupied' %}
+                                            <span class="price-lbl">Current Live Price</span>
+                                            <span class="cyan-price" id="live-price-{{ log.reserv_id }}">{{ "%.2f"|format(log.live_price) }} EGP</span>
+                                        {% else %}
+                                            <span class="price-lbl">Estimated Price</span>
+                                            <span class="cyan-price">{{ "%.2f"|format(log.Reserved_hour_price * log.Duration_T) }} EGP</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if log.reserv_status == 'occupied' %}
+                                    {% else %}
+                                        <button class="btn-danger" style="padding: 8px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; background-color: #ef4444; color: white;" onclick="openCancelModal({{ log.reserv_id }}, '{{ log.car.plate_no if log.car else 'N/A' }}')">Cancel</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if active_count.value == 0 %}
+                        <p style="color: #94a3b8; margin-bottom: 30px;">You have no active reservations right now.</p>
+                    {% endif %}
+
+                    <h3 class="res-section-title mt-40">History</h3>
+                    
+                    {% set history_count = namespace(value=0) %}
+                    {% for log in logs %}
+                        {% if log.reserv_status in ['completed', 'cancelled', 'failed'] %}
+                            {% set history_count.value = history_count.value + 1 %}
+                            <div class="history-box">
+                                <div class="split-row pb-15">
+                                    {% if log.reserv_status == 'completed' %}
+                                        <div class="status-normal" style="color: #00c2b8; border-color: #00c2b8;">
+                                            <i class="fa-solid fa-check-double"></i> Checked Out
+                                        </div>
+                                    {% else %}
+                                        <div class="status-danger"><i class="fa-solid fa-xmark"></i> {{ log.reserv_status|capitalize }}</div>
+                                    {% endif %}
+                                    <div class="time-text">
+                                        {% if log.created_at %}
+                                            {{ log.created_at.strftime('%b %d, %Y - %I:%M %p') }}
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="details-stack">
+                                    <p class="font-bold"><i class="fa-solid fa-location-dot"></i> 
+                                        {% if log.slot and log.slot.garage %}
+                                            {{ log.slot.garage.name }}
+                                        {% else %}
+                                            Unknown Garage
+                                        {% endif %}
+                                    </p>
+                                    <p><i class="fa-solid fa-car"></i> Plate No: {{ log.car.plate_no if log.car else 'N/A' }}</p>
+                                    <p><i class="fa-solid fa-square-parking"></i> Spot No: {{ log.slot.slot_name if log.slot else 'N/A' }}</p>
+                                    
+                                    {% if log.reserv_status == 'completed' %}
+                                        <p><i class="fa-solid fa-arrow-right-to-bracket text-cyan"></i> In: <strong style="color: #fff;">{{ log.log_in_t.strftime('%I:%M %p') if log.log_in_t else '--' }}</strong></p>
+                                        <p><i class="fa-solid fa-arrow-right-from-bracket text-cyan"></i> Out: <strong style="color: #fff;">{{ log.log_out_t.strftime('%I:%M %p') if log.log_out_t else '--' }}</strong></p>
+                                        <p><i class="fa-solid fa-stopwatch text-cyan"></i> Total Duration: <strong style="color: #00c2b8;">{{ log.live_duration }}</strong></p>
+                                    {% else %}
+                                        <p><i class="fa-solid fa-hourglass-half"></i> Duration: {{ log.Duration_T }} Hours</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="split-row pt-15">
+                                    <div class="price-inline">
+                                        <span class="price-lbl">Paid Price</span>
+                                        <span class="white-price normal-price">
+                                            {% if log.reserv_status == 'cancelled' or log.reserv_status == 'failed' %}
+                                                0.00 EGP
+                                            {% elif log.reserv_status == 'completed' %}
+                                                {{ "%.2f"|format(log.live_price) }} EGP
+                                            {% else %}
+                                                {{ "%.2f"|format(log.Reserved_hour_price * log.Duration_T) }} EGP
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>                        
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if history_count.value == 0 %}
+                        <p style="color: #94a3b8;">You have no past reservations history.</p>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <div id="cancel-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">Cancel Reservation</h2>
+            <p class="modal-text">Are you sure you want to cancel the reservation for Plate: <span id="cancel-plate" class="status-active font-bold"></span>?</p>
+            
+            <div class="modal-buttons">
+                <button onclick="closeModal('cancel-modal')" class="btn-outline">Close</button>
+                <button id="confirm-cancel-btn" class="btn-danger">Confirm Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal-box reserve-style-modal">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title">Check Out 🚗</h2>
+                    <p class="modal-subtitle" id="checkout-location">Garage City Center Mall</p>
+                </div>
+                <i class="fa-solid fa-xmark close-btn" onclick="closeModal('checkout-modal')"></i>
+            </div>
+
+            <div class="form-group mt-20">
+                <label>Vehicle Plate</label>
+                <div class="info-box">
+                    <i class="fa-solid fa-car text-cyan"></i> 
+                    <span id="checkout-plate">ASM 1234</span>
+                </div>
+            </div>
+
+            <div class="split-boxes-row">
+                <div class="form-group box-col">
+                    <label>Spot Info</label>
+                    <div class="spot-type-box active-spot">
+                        <i class="fa-solid fa-star"></i>
+                        <span class="spot-name">VIP</span>
+                        <span class="spot-price" id="checkout-spot">VIP-05</span>
+                    </div>
+                </div>
+
+                <div class="form-group box-col">
+                    <label>Duration (Hours)</label>
+                    <div class="info-box duration-box">
+                        <span id="checkout-duration">2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="total-blue-box">
+                <span class="text-sm">Estimated Total:</span>
+                <div class="price-display">
+                    <span id="checkout-price">20.00</span> <span class="currency">EGP</span>
+                </div>
+            </div>
+
+            <button id="confirm-checkout-btn" class="btn-cyan full-width">Confirm Check Out</button>
+        </div>
+    </div>
+
+    <script src="reservation.js"></script>
+    <script src="user.js"></script>
+        
+</body>
+</html>

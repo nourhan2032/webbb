@@ -1,0 +1,348 @@
+/* =====================================================
+   SMARTPARK WALLET UI SYSTEM (INTEGRATED & REFINED)
+===================================================== */
+
+/* ================= توسيط الكارت داخل الداشبورد ================= */
+.wallet-center-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 20px;
+    width: 100%;
+}
+
+.flow-card {
+    background: var(--surface-color); 
+    border-radius: 24px; 
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+    border: 1px solid var(--border-color);
+    position: relative; 
+    overflow: hidden; 
+    min-height: 500px;
+    width: 100%;
+    max-width: 550px; 
+    margin: 0 auto;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+.flow-view { display: none; animation: fadeIn 0.4s ease forwards; }
+.flow-view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.flow-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.btn-back { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;}
+.btn-back:hover { background: #00c2b8; color: #05080f; border-color: #00c2b8; }
+.flow-title { font-family: 'Urbanist', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0; }
+
+/* ================= النصوص والبيانات العلوية ================= */
+.d-flex-between { display: flex; justify-content: space-between; align-items: center; }
+.user-info-badge { display: flex; align-items: center; gap: 15px;}
+.icon-box-round { width: 45px; height: 45px; border-radius: 50%; background: #00c2b8;; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-main); }
+.user-info-badge h3 { font-size: 1.15rem; margin: 0 0 2px 0; color: var(--text-main); font-weight: 700; font-family: 'Urbanist', sans-serif;}
+.user-info-badge p { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 600; }
+.notification-icon { font-size: 1.3rem; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+.notification-icon:hover {color:  #00c2b8; }
+
+/* ================= View 1: Overview & Balance (الكارت الكحلي الفخم) ================= */
+.balance-master {
+    background: linear-gradient(135deg, #0f172a 0%, #00c2b8 100%); /* الكحلي بتاع الصورة */
+    border-radius: 20px; 
+    padding: 30px; 
+    color: #fff;
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.2); 
+    position: relative; 
+    overflow: hidden; 
+    margin-bottom:  24px;
+    margin-top:  24px;
+}
+
+/* تأثير اللمعة المستمر */
+.balance-master::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transform: skewX(-25deg); animation: featureShimmer 6s infinite;
+}
+
+.b-label { font-size: 0.9rem; font-weight: 600; opacity: 0.9; margin-bottom: 10px; position: relative; z-index: 1;}
+
+.b-amount { 
+    font-family: 'Georgia', serif; /* الخط الكلاسيكي للفلوس */
+    font-size: 3.5rem; 
+    font-weight: 700; 
+    line-height: 1; 
+    position: relative; 
+    z-index: 1; 
+    margin-bottom: 25px;
+}
+.b-amount .dec { font-size: 1.8rem; opacity: 0.9;}
+.b-amount .currency { font-size: 1.2rem; font-family: 'Urbanist', sans-serif; font-weight: 800; margin-left: 5px; opacity: 0.9;}
+
+.btn-balance-add {
+    background: rgba(255, 255, 255, 0.15); 
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff; 
+    padding: 14px; 
+    border-radius: 12px; 
+    font-weight: 700; 
+    font-size: 0.95rem; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+    width: 100%; 
+    position: relative; 
+    z-index: 1;
+    backdrop-filter: blur(5px);
+}
+.btn-balance-add:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+/* ================= كروت المعلومات (Visa / Promo) ================= */
+.info-card {
+    background: var(--bg-color); 
+    border: 1px solid var(--border-color); 
+    border-radius: 16px;
+    padding: 18px 20px; 
+    margin-bottom: 16px; 
+    transition: all 0.3s ease;
+}
+.info-card:hover { border-color: #00c2b8; box-shadow: 0 4px 12px rgba(0, 194, 184, 0.08); }
+
+.info-left { display: flex; align-items: center; gap: 15px; }
+.icon-box {
+    width: 44px; height: 44px; 
+    background: var(--surface-color); 
+    border-radius: 12px; 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 1.3rem; 
+    border: 1px solid var(--border-color);
+}
+.icon-blue { color: #00c2b8; } 
+.icon-teal { color: #00c2b8; } 
+
+.info-title { font-size: 1rem; font-weight: 800; margin-bottom: 4px; color: var(--text-main); font-family: 'Urbanist', sans-serif;}
+.info-sub { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 600;}
+.btn-text { background: transparent; border: none; color: #00c2b8; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.3s; }
+.btn-text:hover { color: #008c85; text-decoration: underline; }
+
+/* ================= الأزرار الأساسية ================= */
+.btn-primary-action {
+    background: #00c2b8; 
+    color: #05080f; 
+    font-size: 1rem; 
+    font-weight: 800;
+    padding: 16px; 
+    border-radius: 14px; 
+    border: none; 
+    width: 100%;
+    transition: all 0.3s; 
+    cursor: pointer; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px;
+    margin-top: 15px;
+}
+.btn-primary-action:hover { background: #008c85; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 194, 184, 0.3); color: white;}
+
+/* ================= Selection Lists & Inputs ================= */
+.section-subtitle { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin: 24px 0 12px 0; }
+.selection-list { display: flex; flex-direction: column; }
+.selection-item {
+    background: var(--bg-color);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px; 
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    cursor: pointer; 
+    transition: 0.3s ease;
+}
+.selection-item:hover { border-color: rgba(0, 194, 184, 0.5); }
+.selection-item.selected { border-color: #00c2b8; background: rgba(0, 194, 184, 0.05); box-shadow: 0 0 0 1px #00c2b8; }
+
+.radio-group { display: flex; align-items: center; gap: 16px; }
+.custom-radio {
+    width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--text-muted);
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s; position: relative;
+}
+.selection-item.selected .custom-radio { border-color: #00c2b8; }
+.selection-item.selected .custom-radio::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background: #00c2b8; border-radius: 50%; }
+
+.item-label { font-size: 1rem; font-weight: 700; color: var(--text-main); transition: 0.2s; }
+.selection-item.selected .item-label { color: #00c2b8; }
+.item-value { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+
+/* مدخلات الرصيد المخصص */
+.custom-input-area { display: none; margin-top: 10px; animation: fadeIn 0.3s ease; }
+.input-icon-wrap { position: relative; }
+.input-icon-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+.form-control-custom {
+    background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px;
+    color: var(--text-main); padding: 14px 16px 14px 40px; font-size: 0.95rem; font-weight: 600; width: 100%; transition: all 0.3s;
+}
+.form-control-custom:focus { border-color: #00c2b8; outline: none; box-shadow: 0 0 0 3px rgba(0, 194, 184, 0.1); }
+.input-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; font-weight: 600;}
+
+/* الـ Badges & Icons */
+.method-wrap { display: flex; align-items: center; gap: 12px; }
+.method-icon { font-size: 24px; display: flex; align-items: center; }
+.method-icon.wallet { color: #e60000; }
+.badge-status { font-size: 0.75rem; padding: 6px 12px; border-radius: 50px; font-weight: 700; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px;}
+.bg-success-light { background: rgba(0, 255, 135, 0.1); color: var(--success-color); }
+.bg-warning-light { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+
+/* مفتاح التفعيل (Auto Recharge Toggle) */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #00c2b8; }
+input:checked + .slider:before { transform: translateX(20px); }
+/* ================= تظبيط هيدر المحفظة ================= */
+/* ================= تظبيط المحتوى الأساسي ================= */
+.main-content {
+    position: relative; /* مهم جداً عشان الأيقونات تظبط مقاسها على الشاشة دي */
+}
+
+/* ================= تظبيط الهيدر العلوي ================= */
+.top-bar {
+    display: flex;
+    justify-content: center; 
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 40px;
+    position: relative; /* 💡 ده التعديل السحري: لازم يكون relative عشان يحضن الأيقونات جواه */
+    z-index: 100; /* عشان يفضل فوق أي طبقة تانية */
+}
+
+/* ================= القمر والبروفايل (في أول الصفحة من فوق) ================= */
+.top-actions {
+    position: absolute;
+    top: 50%; /* نخليهم في نص الهيدر بالظبط */
+    transform: translateY(-50%); /* تظبيط السنتراليزيشن */
+    right: 0; /* نخليهم على اليمين خالص جوه التوب بار */
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 101; /* أولوية الكليك */
+}
+
+/* ================= ترفيع كلمة Digital Wallet ================= */
+.welcome-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+    margin-top: 10px; /* قللنا المسافة اللي كانت منزلاها تحت */
+    padding-top: 0;
+}
+
+.welcome-text h2 {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    gap: 12px;
+    line-height: 1; 
+}
+
+.welcome-text h2 .icon-gradient {
+    background: linear-gradient(135deg, #00c2b8 0%, #1a6bff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+    transform: translateY(-2px); 
+}
+
+.welcome-text p {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    max-width: 100%;
+    margin: 0;
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   الوضع النهاري (Light Mode Integration)
+===================================================== */
+/* ================= تظبيط الوضع النهاري (Light Mode) ================= */
+.light-mode .welcome-text h2 {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.light-mode .flow-card { background: #ffffff; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.08); }
+.light-mode .icon-box-round, .light-mode .info-card, 
+.light-mode .selection-item, 
+.light-mode .form-control-custom,
+.light-mode .btn-back { background: #f8fafc; border-color: rgba(0,0,0,0.08); }
+
+.light-mode .icon-box { background: #ffffff; border-color: rgba(0,0,0,0.08); box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+
+.light-mode .flow-title, 
+.light-mode .info-title, 
+.light-mode .item-label, 
+.light-mode .item-value { color: #0f172a; }
+
+.light-mode .info-sub, 
+.light-mode .section-subtitle, 
+.light-mode .input-hint,
+.light-mode .view-desc { color: #475569; }
+
+.light-mode .selection-item.selected { border-color: #008c85; background: rgba(0, 140, 133, 0.05); box-shadow: 0 0 0 1px #008c85; }
+.light-mode .selection-item.selected .custom-radio { border-color: #008c85; }
+.light-mode .selection-item.selected .custom-radio::after { background: #008c85; }
+.light-mode .selection-item.selected .item-label { color: #008c85; }
+
+.light-mode .btn-primary-action { background: #008c85; color: white; }
+.light-mode .btn-primary-action:hover { box-shadow: 0 8px 24px rgba(0, 140, 133, 0.3); }
+
+.light-mode .slider { background-color: #cbd5e1; }
+.light-mode input:checked + .slider { background-color: #008c85; }
+/* =========================================
+   تعديلات الموبايل لصفحة المحفظة (walletStyle.css)
+========================================= */
+@media screen and (max-width: 768px) {
+    /* بنجيب كروت الرصيد والفيزا تحت بعض بدل ما هما جنب بعض */
+    .wallet-cards-wrapper, 
+    .cards-grid,
+    .wallet-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    /* بنعمل سكرول بالعرض لجدول المعاملات عشان الشاشة متبوظش */
+    .transactions-table-container, 
+    .table-responsive,
+    .wallet-history {
+        overflow-x: auto !important;
+        display: block !important;
+        width: 100% !important;
+        -webkit-overflow-scrolling: touch; /* بيخلي السكرول ناعم على الموبايل */
+    }
+
+    /* بنصغر المسافات الداخلية للكروت عشان تناسب حجم الموبايل */
+    .wallet-box, 
+    .wallet-card {
+        padding: 15px !important;
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* تصغير خطوط المبالغ المالية الكبيرة */
+    .balance-amount,
+    .total-balance {
+        font-size: 2rem !important;
+    }
+}

@@ -1,0 +1,379 @@
+.main-content {
+    animation: pageFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pageFadeIn {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+/* ========================================================================= */
+
+.history-page-wrapper {
+    max-width: 550px; 
+    margin: 0;
+    padding-bottom: 40px;
+}
+
+.res-section-title {
+    font-size: 1.2rem;
+    color: var(--text-main);
+    margin: 0 0 20px 0;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 700;
+}
+
+.mt-40 { margin-top: 40px; }
+
+/* الكارت الأساسي متوافق مع الدايت والنايت */
+.history-box {
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 24px !important; 
+    padding: 25px 30px !important;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06); /* ظل خفيف جداً عشان اللايت مود */
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+/* في حالة الدارك مود فقط بنقوي الظل الخارجي */
+body.dark-mode .history-box {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.history-box:hover {
+    border-color: rgba(0, 194, 184, 0.5) !important;
+    transform: translateY(-3px);
+}
+
+/* كارت الحجز الحالي (تم إزالة اللون الأسود الثابت واستبداله بلمعان سماوي متوافق) */
+.current-box {
+    border: 2px solid var(--primary-color) !important;
+    background: var(--surface-color) !important;
+}
+
+.current-box::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(145deg, rgba(0, 194, 184, 0.08) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.split-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    position: relative;
+    z-index: 2;
+}
+
+.pb-15 {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pt-15 {
+    padding-top: 15px;
+    margin-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.status-active { color: var(--primary-color); font-weight: 700; font-size: 1.05rem; }
+.status-normal { color: var(--text-muted); font-weight: 700; font-size: 1.05rem; }
+.status-danger { color: var(--danger-color); font-weight: 700; font-size: 1.05rem; }
+
+.time-text {
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.details-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.details-stack p {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1.05rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.details-stack p i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.font-bold {
+    font-weight: 800 !important;
+    font-size: 1.15rem !important;
+}
+
+/* حل سحري لمنع اختفاء النصوص البيضاء في اللايت مود */
+.details-stack p strong[style*="color: #fff;"],
+.details-stack p strong[style*="color: white;"] {
+    color: var(--text-main) !important;
+}
+
+.price-inline {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.price-lbl {
+    color: var(--text-main);
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.cyan-price {
+    color: var(--primary-color) !important;
+    font-size: 1.6rem !important;
+    font-weight: 900 !important;
+    font-family: 'Urbanist', sans-serif;
+}
+
+.normal-price {
+    color: var(--text-main) !important;
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: 'Urbanist', sans-serif;
+}
+
+.btn-cyan {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 10px 24px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.btn-cyan:hover {
+    background: var(--primary-hover) !important;
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent !important;
+    border: 1px solid var(--text-muted) !important;
+    color: var(--text-main) !important;
+    padding: 8px 22px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.btn-outline:hover {
+    background: var(--text-main) !important;
+    color: var(--bg-color) !important;
+    border-color: var(--text-main) !important;
+}
+
+.btn-danger {
+    background: var(--danger-color, #ef4444) !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 10px 24px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-danger:hover {
+    background: #dc2626 !important;
+    transform: translateY(-1px);
+}
+
+/* ================= ستايل الـ Modals الأساسية ================= */
+.modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 1000;
+    justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;
+}
+.modal-overlay.show { display: flex; opacity: 1; }
+
+.modal-box {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px; padding: 25px 30px; width: 90%; max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transform: translateY(-20px); transition: transform 0.3s ease;
+}
+.modal-overlay.show .modal-box { transform: translateY(0); }
+
+.modal-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); font-family: 'Urbanist', sans-serif; }
+.modal-text { color: var(--text-muted); font-size: 1.05rem; line-height: 1.5; }
+.modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
+
+/* ================= ستايلات فورم الـ Checkout الاحترافية ================= */
+.reserve-style-modal {
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 20px !important; padding: 30px !important; width: 90%; max-width: 420px;
+    color: var(--text-main); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.reserve-style-modal .modal-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;
+}
+
+.reserve-style-modal .modal-title { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--text-main); }
+.reserve-style-modal .modal-subtitle { color: var(--text-muted); font-size: 0.9rem; margin: 5px 0 0 0; font-weight: 500; }
+.reserve-style-modal .close-btn { cursor: pointer; color: var(--text-muted); font-size: 1.3rem; transition: 0.3s; padding: 5px; }
+.reserve-style-modal .close-btn:hover { color: #ef4444; transform: scale(1.1); }
+.reserve-style-modal .form-group { display: flex; flex-direction: column; }
+.reserve-style-modal .form-group label { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+
+.reserve-style-modal .info-box {
+    background-color: var(--bg-color); border: 1px solid var(--border-color);
+    border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 12px;
+    font-size: 1.05rem; font-weight: 700; color: var(--text-main);
+}
+
+.text-cyan { color: var(--primary-color); font-size: 1.2rem; }
+.reserve-style-modal .split-boxes-row { display: flex; gap: 15px; margin-top: 20px; }
+.reserve-style-modal .box-col { flex: 1; }
+
+.reserve-style-modal .spot-type-box {
+    background-color: rgba(0, 194, 184, 0.05); border: 1px solid var(--primary-color); 
+    border-radius: 12px; padding: 15px; text-align: center; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 6px; height: 100%; min-height: 90px;
+}
+
+.reserve-style-modal .spot-type-box i { color: var(--primary-color); font-size: 1.4rem; }
+.reserve-style-modal .spot-type-box .spot-name { font-weight: 800; font-size: 1.05rem; color: var(--text-main);}
+.reserve-style-modal .spot-type-box .spot-price { color: var(--primary-color); font-size: 0.85rem; font-weight: 700; }
+
+.reserve-style-modal .duration-box {
+    justify-content: center; height: 100%; min-height: 90px;
+    font-size: 2.2rem !important; font-weight: 800 !important; color: var(--text-main);
+}
+
+.reserve-style-modal .total-blue-box {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 14px; padding: 18px 20px; display: flex; justify-content: space-between;
+    align-items: center; margin-top: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.reserve-style-modal .total-blue-box .text-sm { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); }
+.reserve-style-modal .price-display { font-size: 1.6rem; font-weight: 900; color: var(--text-main); display: flex; align-items: baseline; gap: 6px; }
+.reserve-style-modal .price-display .currency { font-size: 1.1rem; font-weight: 800; color: var(--primary-color); }
+
+.reserve-style-modal .full-width {
+    width: 100%; padding: 16px; font-size: 1.1rem; border-radius: 12px; border: none;
+    background-color: var(--primary-color); color: white; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 25px; letter-spacing: 0.5px;
+}
+.reserve-style-modal .full-width:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 194, 184, 0.3); }
+
+.mt-20 { margin-top: 20px; }
+
+/* ================= SMART TIRE VISUALIZER (PREMIUM 3D DESIGN) ================= */
+.tire-status-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 140px;
+    height: 220px;
+    position: relative;
+    margin: 0 auto;
+    z-index: 2;
+}
+
+/* شاسيه العربية (داكن بشكل أنيق يتناسب مع الكارت الأبيض أو الأسود) */
+.smart-car-chassis {
+    width: 76px;  
+    height: 170px; 
+    background: #1e2430; 
+    border-radius: 40px 40px 15px 15px; 
+    position: relative;
+    
+    box-shadow:
+        inset 0 8px 10px rgba(255, 255, 255, 0.15), 
+        inset 0 -8px 10px rgba(0, 0, 0, 0.6), 
+        inset 6px 0 12px rgba(0, 0, 0, 0.4), 
+        inset -6px 0 12px rgba(0, 0, 0, 0.4), 
+        0 15px 25px rgba(0,0,0,0.2); /* تخفيف قوة الظل الساقط عشان ميشوهش الكارت الفاتح */
+    border: 1px solid #334155;
+    z-index: 5;
+}
+
+/* السقف والزجاج البانوراما */
+.smart-car-chassis::before {
+    content: "";
+    position: absolute;
+    top: 42px; bottom: 25px; left: 8px; right: 8px;
+    background: linear-gradient(180deg, #0a0d14 0%, #151b26 40%, #151b26 60%, #0a0d14 100%);
+    border-radius: 20px 20px 8px 8px;
+    border: 2px solid #2a3441;
+    box-shadow: inset 0 5px 12px rgba(255, 255, 255, 0.15); 
+}
+
+/* الفوانيس (الأمامية والخلفية) */
+.smart-car-chassis::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 40px 40px 15px 15px;
+    box-shadow:
+        inset 15px 4px 10px -10px rgba(255, 255, 255, 0.9), 
+        inset -15px 4px 10px -10px rgba(255, 255, 255, 0.9), 
+        inset 20px -4px 12px -15px rgba(239, 68, 68, 1), 
+        inset -20px -4px 12px -15px rgba(239, 68, 68, 1); 
+    pointer-events: none;
+}
+
+/* الكاوتشات */
+.smart-tire {
+    width: 14px;
+    height: 36px;
+    border-radius: 4px;
+    position: absolute;
+    background: #10b981; 
+    z-index: 1; 
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.smart-tire.flat {
+    background: #ef4444; 
+    animation: flat-alarm 0.5s infinite alternate;
+    z-index: 10; 
+}
+
+@keyframes flat-alarm {
+    0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); transform: scale(1); }
+    100% { box-shadow: 0 0 25px rgba(239, 68, 68, 1); transform: scale(1.15); }
+}
+
+/* أماكن العجل */
+.smart-tire.front_left { top: 32px; left: -8px; }
+.smart-tire.front_right { top: 32px; right: -8px; }
+.smart-tire.rear_left { bottom: 25px; left: -8px; }
+.smart-tire.rear_right { bottom: 25px; right: -8px; }

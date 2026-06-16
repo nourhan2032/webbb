@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | SmartPark AI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="dashboardStyle.css">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-car-burst"></i>
+                    <span>SmartPark</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="user-dashboard.html"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+                <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+                <li><a href="vehicles.html"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+                <li><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+                <li class="settings-tab"><a href="settings.html"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {% set custom_page_title = 'Account Settings <i class="fa-solid fa-gear"></i>' %}
+            {% set custom_page_subtitle = 'Update your personal information and security preferences.' %}
+            {% include 'topbar.html' %}
+
+             <div class="location-section">
+                </div>
+
+
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="booking-card" style="position: static; transform: none; width: 100%; max-width: 100%; box-shadow: none;">
+                    
+                    <form id="pageSettingsForm" class="booking-form">
+                        <h4 style="color: var(--primary-color); font-size: 1.2rem; margin-bottom: 20px;"><i class="fa-solid fa-user"></i> البيانات الشخصية</h4>
+                        
+                        <div class="form-group mb-4">
+                            <label class="section-subtitle">Name</label>
+                            <input type="text" id="pageSettingsName" class="form-control" value="{{ user.name }}" style="width: 100%; padding: 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="section-subtitle">Phone Number</label>
+                            <input type="text" id="pageSettingsPhone" class="form-control" value="{{ user.phone if user.phone else '' }}" style="width: 100%; padding: 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+                        </div>
+
+                        <hr style="border-color: var(--border-color); margin: 30px 0;">
+                        <h4 style="color: var(--warning-color); font-size: 1.2rem; margin-bottom: 20px;"><i class="fa-solid fa-key"></i> حماية الحساب (تغيير كلمة المرور)</h4>
+
+                        <div class="form-group mb-4">
+                            <label class="section-subtitle">Current Password</label>
+                            <input type="password" id="pageCurrentPassword" class="form-control" placeholder="••••••••" style="width: 100%; padding: 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="section-subtitle">New Password</label>
+                            <input type="password" id="pageNewPassword" class="form-control" placeholder="Enter a new password if you wish to change it" style="width: 100%; padding: 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+                        </div>
+
+                        <button type="submit" class="btn-primary-action" style="margin-top: 20px;">حفظ التعديلات الجديدة</button>
+                    </form>
+                    
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="user.js"></script>
+</body>
+</html>

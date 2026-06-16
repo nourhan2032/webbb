@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Control Center | SmartPark AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- إضافة مكتبة SweetAlert2 للإشعارات الجمالية -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
+    <style>
+        :root { --sidebar-bg: #1a1c23; --accent: #00d2ff; }
+        body { background-color: #f4f7fc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Sidebar Style */
+        .sidebar { height: 100vh; background: var(--sidebar-bg); color: white; position: fixed; width: 250px; padding-top: 20px; z-index: 1000; }
+        .nav-link { color: #8a8b92; padding: 15px 25px; transition: 0.3s; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,0.05); border-left: 4px solid var(--accent); }
+        
+        .main-content { margin-left: 250px; padding: 30px; }
+        .stat-card { border: none; border-radius: 15px; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .bg-defect { background: #ffe5e5; color: #d9534f; }
+        .bg-clear { background: #e5f9e7; color: #28a745; }
+
+        /* ستايل ليد الحالة الخاص بالـ Live Traffic */
+        .led-container { display: flex; align-items: center; gap: 10px; font-weight: bold; }
+        .led { width: 25px; height: 25px; border-radius: 50%; background: #ccc; transition: 0.3s; }
+        .led.green { background: #28a745; box-shadow: 0 0 15px #28a745; }
+        .led.red { background: #dc3545; box-shadow: 0 0 15px #dc3545; }
+
+        /* ستايل صندوق النمرة */
+        .plate-display { background: var(--sidebar-bg); color: white; }
+        .video-container { width: 100%; border-radius: 10px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center;}
+        .video-container img { width: 100%; max-height: 400px; object-fit: contain; }
+
+        /* إخفاء الأقسام وإظهار النشط فقط */
+        .view-section { display: none; animation: fadeIn 0.4s; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ستايلات إضافية */
+        .hover-shadow:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .message-unread { background-color: #f8fbff; cursor: pointer; transition: 0.2s;}
+        .message-unread:hover { background-color: #eef5ff; }
+        .message-read { background-color: transparent; cursor: pointer; transition: 0.2s;}
+        .message-read:hover { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="px-4 mb-5">
+            <h4 class="fw-bold text-white">SMART<span class="text-info">PARK</span></h4>
+            <small class="text-muted small">Admin Panel v2.0</small>
+        </div>
+        <nav class="nav flex-column" id="sidebar-nav">
+            <a class="nav-link active" data-target="view-dashboard">
+                <i class="fas fa-chart-line me-2"></i> Dashboard
+            </a>
+            
+            <a class="nav-link" data-target="view-traffic">
+                <i class="fas fa-car me-2"></i> Live Traffic
+            </a>
+            
+            <a class="nav-link" data-target="view-customers">
+                <i class="fas fa-users me-2"></i> Customers
+            </a>
+
+            <!-- لينك صفحة الرسائل -->
+            <a class="nav-link" data-target="view-messages">
+                <i class="fas fa-envelope me-2"></i> Messages
+                <!-- أضفنا ID للعداد عشان نقدر نقلله بالجافاسكريبت -->
+                <span id="unread-counter" class="badge bg-danger rounded-pill float-end mt-1" style="font-size: 0.7rem;">2</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- ==============================================
+             1. DASHBOARD VIEW
+        =============================================== -->
+        <div id="view-dashboard" class="view-section active">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold d-inline-block m-0">Real-time Overview</h2>
+                </div>
+                <div class="input-group" style="width: 300px;">
+                    <input type="text" class="form-control" placeholder="Search Plate Number...">
+                    <button class="btn btn-info text-white"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 shadow-sm">
+                        <small class="text-muted fw-bold">CURRENTLY IN</small>
+                        <h2 class="fw-bold">42 <span class="fs-6 text-muted">/ 100</span></h2>
+                        <div class="progress mt-2" style="height: 5px;">
+                            <div class="progress-bar bg-info" style="width: 42%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 shadow-sm border-start border-danger border-4">
+                        <small class="text-muted fw-bold">AI ALERTS</small>
+                        <h2 class="fw-bold text-danger">3</h2>
+                        <small>Defects Detected today</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card p-3 shadow-sm">
+                        <small class="text-muted fw-bold">DAILY REVENUE</small>
+                        <h2 class="fw-bold text-success">$1,240</h2>
+                        <small class="text-success"><i class="fas fa-caret-up"></i> +12% from yesterday</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stat-card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-4 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="fas fa-list-ul me-2 text-info"></i>Recent Entry/Exit Log
+                    </h5>
+                    <button class="btn btn-sm btn-light border text-muted hover-shadow">
+                        <i class="fas fa-download me-1"></i> Export Log
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover table-borderless align-middle mb-0 custom-table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Vehicle & Owner</th>
+                                <th class="fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Entry Time</th>
+                                <th class="fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Tire Status (AI)</th>
+                                <th class="fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Accident Scan</th>
+                                <th class="text-end pe-4 fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #f8f9fa;">
+                                <td class="ps-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-dark text-white rounded px-2 py-1 me-3 fw-bold shadow-sm text-center" style="font-size: 0.85rem; letter-spacing: 1px; min-width: 90px;">ASM 1234</div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Osama Elmihy</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">Registered User</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3">
+                                    <div class="fw-bold text-dark">12:30:45</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Today</div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2 fw-semibold" style="font-size: 0.8rem;">
+                                        <i class="fas fa-check-circle me-1"></i> Normal
+                                    </span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2 fw-semibold" style="font-size: 0.8rem;">
+                                        <i class="fas fa-shield-alt me-1"></i> Clear
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    <button class="btn btn-sm btn-light text-primary rounded-circle shadow-sm" style="width: 35px; height: 35px; transition: 0.3s;" title="View Details">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================================
+             2. LIVE TRAFFIC VIEW
+        =============================================== -->
+        <div id="view-traffic" class="view-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Live Traffic & AI Camera</h2>
+                <div class="input-group" style="width: 300px;">
+                    <input type="text" class="form-control" placeholder="Search Plate Number...">
+                    <button class="btn btn-info text-white"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card stat-card p-3 shadow-sm border-start border-info border-4 h-100">
+                        <small class="text-muted fw-bold">GARAGE OCCUPANCY</small>
+                        <h2 class="fw-bold">
+                            <span id="occupied-slots" class="text-danger">0</span> 
+                            <span class="fs-6 text-muted">/ <span id="total-slots">50</span></span>
+                        </h2>
+                        <small class="text-success fw-bold">Free Slots: <span id="free-slots">50</span></small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-lg-8">
+                    <div class="card stat-card shadow-sm p-2 h-100">
+                        <div class="video-container h-100">
+                            <img src="{{ url_for('video_feed') }}" alt="Live Camera Feed">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card stat-card plate-display shadow-sm p-4 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                        <h5 class="text-info mb-4"><i class="fas fa-camera me-2"></i>Captured Plate</h5>
+                        <div id="plate-image" style="width: 100%; height: 80px; background: #000; margin-bottom: 20px; border-radius: 8px;"></div>
+                        <h1 id="ocr-result" class="display-4 fw-bold mb-4" style="letter-spacing: 2px;">----</h1>
+                        <div class="led-container justify-content-center mt-auto p-3 bg-dark rounded-pill w-100">
+                            <div id="status-led" class="led"></div>
+                            <span id="status-text" class="fs-5">WAITING...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================================
+             3. CUSTOMERS VIEW
+        =============================================== -->
+        <div id="view-customers" class="view-section">
+            <div class="mb-4">
+                <h2 class="fw-bold">Customers Management</h2>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card stat-card p-3 shadow-sm border-start border-primary border-4">
+                        <small class="text-muted fw-bold">TOTAL REGISTERED</small>
+                        <h2 class="fw-bold">1,250</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card p-3 shadow-sm border-start border-success border-4">
+                        <small class="text-muted fw-bold">ACTIVE SUBSCRIPTIONS</small>
+                        <h2 class="fw-bold">840</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card stat-card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">Customer Database</h5>
+                    <div class="input-group" style="width: 250px;">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search by name...">
+                        <button class="btn btn-sm btn-info text-white"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive p-3">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Plate No.</th>
+                                <th>Email</th>
+                                <th>Wallet Balance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="fw-bold text-dark">Osama Elmihy</div></td>
+                                <td><span class="badge bg-dark p-2" style="font-size: 0.85rem; letter-spacing: 1px;">ASM 1234</span></td>
+                                <td>osama@example.com</td>
+                                <td class="text-success fw-bold">50.00 EGP</td>
+                                <td><span class="status-badge bg-clear">Active</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary me-1"><i class="fas fa-pen"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================================
+             4. MESSAGES VIEW (الصفحة الجديدة)
+        =============================================== -->
+        <div id="view-messages" class="view-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">User Messages</h2>
+                <button class="btn btn-outline-secondary" onclick="markAllAsRead()"><i class="fas fa-check-double me-2"></i> Mark all as read</button>
+            </div>
+
+            <div class="card stat-card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-4 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="fas fa-inbox me-2 text-info"></i>Inbox
+                    </h5>
+                    <div class="input-group" style="width: 250px;">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search messages...">
+                        <button class="btn btn-sm btn-info text-white"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0 custom-table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Sender</th>
+                                <th class="fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Message Preview</th>
+                                <th class="fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Date</th>
+                                <th class="text-end pe-4 fw-semibold text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- رسالة جديدة (Unread) -->
+                            <!-- الداتا مخزنة في الـ tr عشان الجافاسكريبت يقرأها لما نفتح الـ Modal -->
+                            <tr class="message-unread" style="border-bottom: 1px solid #f8f9fa;"
+                                data-name="Ahmed Mahmoud" data-email="ahmed.m@example.com" data-avatar="AM" data-color="bg-primary"
+                                data-subject="Issue with Vodafone Cash" data-date="Today, 10:30 AM"
+                                data-body="Hello,\n\nI tried to recharge my wallet using Vodafone Cash but I got an error saying the transaction failed, even though the money was deducted from my account. Please help me resolve this.\n\nThanks,\nAhmed">
+                                
+                                <td class="ps-4 py-3" onclick="openMessageView(this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold shadow-sm" style="width: 40px; height: 40px;">AM</div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Ahmed Mahmoud</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">ahmed.m@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3" style="max-width: 300px;" onclick="openMessageView(this)">
+                                    <div class="fw-bold text-dark text-truncate subject-text" style="font-size: 0.9rem;">Issue with Vodafone Cash</div>
+                                    <div class="text-muted text-truncate" style="font-size: 0.85rem;">Hello, I tried to recharge my wallet using Vodafone Cash but I got an error saying...</div>
+                                </td>
+                                <td class="py-3" onclick="openMessageView(this)">
+                                    <div class="fw-bold text-primary date-text" style="font-size: 0.85rem;">Today, 10:30 AM</div>
+                                    <span class="badge bg-danger rounded-pill new-badge" style="font-size: 0.65rem;">New</span>
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    <button class="btn btn-sm btn-light text-primary rounded-pill px-3 shadow-sm border hover-shadow" onclick="openMessageView(this)">
+                                        <i class="fas fa-eye me-1"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-info text-white rounded-pill px-3 shadow-sm hover-shadow ms-1" onclick="openReplyModal(this)">
+                                        <i class="fas fa-reply me-1"></i> Reply
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- رسالة جديدة (Unread) -->
+                            <tr class="message-unread" style="border-bottom: 1px solid #f8f9fa;"
+                                data-name="Youssef Emad" data-email="youssef@example.com" data-avatar="YE" data-color="bg-success"
+                                data-subject="Adding a second car" data-date="Today, 08:15 AM"
+                                data-body="Hi Team,\n\nIs it possible to link two license plates to the same wallet account? I want to add my wife's car so we can share the same balance.\n\nBest regards,\nYoussef">
+                                
+                                <td class="ps-4 py-3" onclick="openMessageView(this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold shadow-sm" style="width: 40px; height: 40px;">YE</div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Youssef Emad</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">youssef@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3" style="max-width: 300px;" onclick="openMessageView(this)">
+                                    <div class="fw-bold text-dark text-truncate subject-text" style="font-size: 0.9rem;">Adding a second car</div>
+                                    <div class="text-muted text-truncate" style="font-size: 0.85rem;">Is it possible to link two license plates to the same wallet account? I want to...</div>
+                                </td>
+                                <td class="py-3" onclick="openMessageView(this)">
+                                    <div class="fw-bold text-primary date-text" style="font-size: 0.85rem;">Today, 08:15 AM</div>
+                                    <span class="badge bg-danger rounded-pill new-badge" style="font-size: 0.65rem;">New</span>
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    <button class="btn btn-sm btn-light text-primary rounded-pill px-3 shadow-sm border hover-shadow" onclick="openMessageView(this)">
+                                        <i class="fas fa-eye me-1"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-info text-white rounded-pill px-3 shadow-sm hover-shadow ms-1" onclick="openReplyModal(this)">
+                                        <i class="fas fa-reply me-1"></i> Reply
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- رسالة مقروءة (Read) -->
+                            <tr class="message-read" style="border-bottom: 1px solid #f8f9fa;"
+                                data-name="Sara Mostafa" data-email="sara.m@example.com" data-avatar="SM" data-color="bg-secondary"
+                                data-subject="Thank you!" data-date="Yesterday, 14:00"
+                                data-body="Hello SmartPark Team,\n\nThe accessible parking feature is amazing, it helped me a lot today. Thank you so much for considering people with disabilities in your design.\n\nKeep up the great work!">
+                                
+                                <td class="ps-4 py-3" onclick="openMessageView(this)">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold shadow-sm" style="width: 40px; height: 40px;">SM</div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Sara Mostafa</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">sara.m@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3" style="max-width: 300px;" onclick="openMessageView(this)">
+                                    <div class="fw-bold text-dark text-truncate subject-text" style="font-size: 0.9rem;">Thank you!</div>
+                                    <div class="text-muted text-truncate" style="font-size: 0.85rem;">The accessible parking feature is amazing, it helped me a lot today. Thank you...</div>
+                                </td>
+                                <td class="py-3" onclick="openMessageView(this)">
+                                    <div class="text-muted date-text" style="font-size: 0.85rem;">Yesterday, 14:00</div>
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    <button class="btn btn-sm btn-light text-primary rounded-pill px-3 shadow-sm border hover-shadow" onclick="openMessageView(this)">
+                                        <i class="fas fa-eye me-1"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-info text-white rounded-pill px-3 shadow-sm hover-shadow ms-1" onclick="openReplyModal(this)">
+                                        <i class="fas fa-reply me-1"></i> Reply
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal: View Message -->
+    <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold">Message Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-3">
+                    <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div id="vmAvatar" class="text-white rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold shadow-sm" style="width: 50px; height: 50px; font-size: 1.2rem;"></div>
+                            <div>
+                                <div id="vmName" class="fw-bold text-dark" style="font-size: 1.1rem;"></div>
+                                <div id="vmEmail" class="text-muted" style="font-size: 0.85rem;"></div>
+                            </div>
+                        </div>
+                        <div id="vmDate" class="text-muted small"></div>
+                    </div>
+                    <h6 id="vmSubject" class="fw-bold text-dark mb-3 fs-5"></h6>
+                    <p id="vmBody" class="text-secondary" style="font-size: 0.95rem; white-space: pre-wrap; line-height: 1.6;"></p>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <!-- الزرار ده هيقفل المودال ويفتح مودال الرد علطول -->
+                    <button type="button" class="btn btn-info text-white px-4" id="vmReplyBtn"><i class="fas fa-reply me-2"></i>Reply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Reply to Message -->
+    <div class="modal fade" id="replyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">Reply to Sender</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">To:</label>
+                        <input type="email" class="form-control bg-light" id="replyEmail" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Message:</label>
+                        <textarea class="form-control" id="replyBody" rows="6" placeholder="Type your response here..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-info text-white px-4" onclick="sendReply()"><i class="fas fa-paper-plane me-2"></i>Send Reply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- السكريبتات -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // سكريبت للتحكم في التنقل وإضاءة السايد بار
+        const navLinks = document.querySelectorAll('.nav-link');
+        const views = document.querySelectorAll('.view-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+
+                views.forEach(v => v.classList.remove('active'));
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // ==========================================
+        // Message System Logic
+        // ==========================================
+        let viewModal, replyModal;
+        document.addEventListener("DOMContentLoaded", function() {
+            viewModal = new bootstrap.Modal(document.getElementById('viewMessageModal'));
+            replyModal = new bootstrap.Modal(document.getElementById('replyModal'));
+        });
+
+        // تحويل الرسالة إلى مقروءة وتقليل العداد
+        function markAsRead(row) {
+            if (row.classList.contains('message-unread')) {
+                // تغيير الكلاس لتغيير لون الخلفية
+                row.classList.remove('message-unread');
+                row.classList.add('message-read');
+                
+                // إزالة بادج New
+                const newBadge = row.querySelector('.new-badge');
+                if(newBadge) newBadge.remove();
+
+                // تغيير لون التاريخ من أزرق لرمادي
+                const dateText = row.querySelector('.date-text');
+                if(dateText) {
+                    dateText.classList.remove('text-primary', 'fw-bold');
+                    dateText.classList.add('text-muted');
+                }
+
+                // تقليل عداد السايد بار
+                const counterBadge = document.getElementById('unread-counter');
+                let count = parseInt(counterBadge.innerText);
+                if (count > 0) {
+                    count--;
+                    counterBadge.innerText = count;
+                    if (count === 0) {
+                        counterBadge.style.display = 'none'; // إخفاء البادج لو مفيش رسايل جديدة
+                    }
+                }
+            }
+        }
+
+        // فتح رسالة للعرض
+        function openMessageView(element) {
+            const row = element.closest('tr');
+            
+            // قراءة البيانات المخزنة في الصف
+            const name = row.getAttribute('data-name');
+            const email = row.getAttribute('data-email');
+            const avatar = row.getAttribute('data-avatar');
+            const color = row.getAttribute('data-color');
+            const subject = row.getAttribute('data-subject');
+            const body = row.getAttribute('data-body');
+            const date = row.getAttribute('data-date');
+
+            // وضع البيانات داخل المودال
+            const avatarDiv = document.getElementById('vmAvatar');
+            avatarDiv.className = `text-white rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold shadow-sm ${color}`;
+            avatarDiv.innerText = avatar;
+            
+            document.getElementById('vmName').innerText = name;
+            document.getElementById('vmEmail').innerText = email;
+            document.getElementById('vmDate').innerText = date;
+            document.getElementById('vmSubject').innerText = subject;
+            // استبدال \n بـ مسافات سطور حقيقية
+            document.getElementById('vmBody').innerText = body.replace(/\\n/g, '\n');
+
+            // تجهيز زرار الرد داخل المودال
+            const replyBtn = document.getElementById('vmReplyBtn');
+            replyBtn.onclick = function() {
+                viewModal.hide();
+                setTimeout(() => { openReplyModal(row); }, 400); // فتح الرد بعد قفل العرض
+            };
+
+            // تحويل الرسالة لمقروءة
+            markAsRead(row);
+            
+            // إظهار المودال
+            viewModal.show();
+        }
+
+        // فتح نافذة الرد (Reply)
+        function openReplyModal(element) {
+            const row = element.closest('tr');
+            const email = row.getAttribute('data-email');
+            
+            document.getElementById('replyEmail').value = email;
+            document.getElementById('replyBody').value = '';
+            
+            markAsRead(row); // تعتبر اتقرأت طالما هيرد عليها
+            replyModal.show();
+        }
+
+        // تنفيذ عملية الإرسال بالـ SweetAlert
+        function sendReply() {
+            const text = document.getElementById('replyBody').value;
+            if(text.trim() === '') {
+                Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please write a message first!' });
+                return;
+            }
+
+            replyModal.hide();
+            
+            Swal.fire({
+                title: 'Sent Successfully!',
+                text: 'Your reply has been sent to the customer.',
+                icon: 'success',
+                confirmButtonColor: '#00d2ff',
+                customClass: { popup: 'rounded-4' }
+            });
+        }
+
+        // زرار تحديد الكل كمقروء
+        function markAllAsRead() {
+            const unreadRows = document.querySelectorAll('.message-unread');
+            unreadRows.forEach(row => markAsRead(row));
+        }
+
+        // ==========================================
+        // Socket.io
+        // ==========================================
+        if (typeof io !== 'undefined') {
+            var socket = io();
+            socket.on('new_result', function(data) {
+                var ocrResult = document.getElementById('ocr-result');
+                if(ocrResult) ocrResult.innerText = data.plate || "----";
+                
+                var led = document.getElementById('status-led');
+                var text = document.getElementById('status-text');
+                
+                if(led && text) {
+                    if(data.status === 'authorized') {
+                        led.className = 'led green';
+                        text.innerText = 'AUTHORIZED';
+                        text.className = 'fs-5 text-success';
+                    } else if (data.status === 'unauthorized') {
+                        led.className = 'led red';
+                        text.innerText = 'NOT AUTHORIZED';
+                        text.className = 'fs-5 text-danger';
+                    } else {
+                        led.className = 'led';
+                        text.innerText = 'WAITING...';
+                        text.className = 'fs-5';
+                    }
+                }
+
+                if(data.total !== undefined) {
+                    var totalEl = document.getElementById('total-slots');
+                    var occEl = document.getElementById('occupied-slots');
+                    var freeEl = document.getElementById('free-slots');
+                    if(totalEl) totalEl.innerText = data.total;
+                    if(occEl) occEl.innerText = data.occupied;
+                    if(freeEl) freeEl.innerText = data.free;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

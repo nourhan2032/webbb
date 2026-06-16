@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | SmartPark AI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="dashboardStyle.css">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-car-burst"></i>
+                    <span>SmartPark</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="active"><a href="user-dashboard.html"><i class="fa-solid fa-map-location-dot"></i> Find Parking</a></li>
+                <li><a href="wallet.html"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+                <li><a href="vehicles.html"><i class="fa-solid fa-car"></i> My Vehicles</a></li>
+                <li><a href="Reservations_page.html"><i class="fa-solid fa-clock-rotate-left"></i> Reservations</a></li>
+                <li class="settings-tab"><a href="settings.html"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
+
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="index.html" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+
+
+
+            {% include 'topbar.html' %}
+
+            <div class="location-section">
+                </div>
+
+            <div class="location-section">
+                
+                <div class="map-container">
+                    <div class="map-header">
+                        <h3><i class="fa-solid fa-location-crosshairs"></i> Your Location</h3>
+                    </div>
+                    
+                    <div class="google-map-placeholder" style="padding: 0; overflow: hidden; border-radius: 12px;">
+                        <div id="map" style="width: 100%; height: 500px;"></div>
+                    </div>
+                </div>
+<div class="nearest-garages">
+    <h3>Nearest Smart Garages</h3>
+    
+    {% for garage in garages %}
+    <div class="garage-card">
+        <div class="garage-info">
+            <h4>{{ garage.name }}</h4>
+            <p><i class="fa-solid fa-location-dot"></i> Calculating...</p>
+        </div>
+        
+        {% if garage.free_spots > 0 %}
+        <div class="garage-status success">
+            <span>{{ garage.free_spots }} Spots</span>
+            <button class="btn open-booking-btn">Book Now</button>
+        </div>
+        {% else %}
+        <div class="garage-status danger">
+            <span>Full</span>
+            <button class="btn open-booking-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Book Now</button>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="bookingModal">
+        <div class="booking-card">
+            <button class="close-modal" id="closeBookingBtn"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="booking-header">
+                <h3>Reserve Your Spot 🚗</h3>
+                <p id="modalGarageName" style="color: #00c2b8; font-weight: bold; font-size: 1.1rem;">Downtown Smart Garage</p>           
+            </div>
+
+            <form id="bookingForm" class="booking-form">
+    
+                <div class="form-group mb-4">
+                    <label class="section-subtitle">Select Your Vehicle</label>
+                    <select id="vehicleSelect" class="form-control custom-select" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; margin-top: 8px;">
+                        </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="section-subtitle">Select Spot Type</label>
+                    <div class="spot-options">
+                        <label class="spot-radio">
+                            <input type="radio" name="spotType" value="standard" checked>
+                            <div class="spot-box">
+                                <i class="fa-solid fa-car-side"></i>
+                                <span>Standard</span><br>
+                                <small id="price-standard" style="color: #00c2b8; font-weight: bold; font-size: 0.8rem;"></small>
+                            </div>
+                        </label>
+                        <label class="spot-radio">
+                            <input type="radio" name="spotType" value="vip">
+                            <div class="spot-box">
+                                <i class="fa-solid fa-star text-warning"></i>
+                                <span>VIP</span><br>
+                                <small id="price-vip" style="color: #f59e0b; font-weight: bold; font-size: 0.8rem;"></small>
+                            </div>
+                        </label>
+                        <label class="spot-radio">
+                            <input type="radio" name="spotType" value="special_needs">
+                            <div class="spot-box">
+                                <i class="fa-solid fa-wheelchair text-primary"></i>
+                                <span>Accessible</span><br>
+                                <small id="price-special" style="color: #3b82f6; font-weight: bold; font-size: 0.8rem;"></small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="section-subtitle">Duration (Hours)</label>
+                    <div class="duration-control">
+                        <button type="button" id="minusHour" class="dur-btn"><i class="fa-solid fa-minus"></i></button>
+                        <span id="durationDisplay" class="dur-value">1</span>
+                        <button type="button" id="plusHour" class="dur-btn"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <div class="price-summary" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Possible Estimated Total:</span>
+                    <div class="total-price" style="display: flex; align-items: baseline; gap: 5px;">
+                        <span id="finalPriceDisplay" style="font-size: 2.5rem; font-weight: 900; color: #fff;">0.00</span> 
+                        <span style="font-size: 1.2rem; font-weight: bold; color: #cbd5e1;">EGP</span>
+                    </div>
+                </div>
+                <div class="form-group mb-4" id="slotSelectionSection">
+                    <button type="button" id="chooseSlotBtn" class="btn-primary-action" style="width: 100%; background-color: #1e293b; border: 2px dashed #00c2b8; color: #00c2b8; box-shadow: none;">
+                        <i class="fa-solid fa-map"></i> Choose Your Slot
+                    </button>
+                    
+                    <div id="selectedSlotDisplay" style="display: none; justify-content: space-between; align-items: center; padding: 12px; background: #00c2b820; border: 1px solid #00c2b8; border-radius: 8px;">
+                        <div>
+                            <i class="fa-solid fa-square-parking text-primary"></i> 
+                            <span style="color: white; font-weight: bold; margin-left: 5px;" id="chosenSlotText">A-03</span>
+                        </div>
+                        <button type="button" id="changeSlotBtn" style="background: none; border: none; color: #f59e0b; cursor: pointer; text-decoration: underline; font-weight: bold;">Change</button>
+                    </div>
+                </div>
+                <div class="price-hint"><i class="fa-solid fa-bolt"></i> Dynamic pricing active based on current demand.</div>
+
+                <button type="submit" class="btn-primary-action mt-3">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="slotDashboardModal" style="align-items: flex-start; padding-top: 5vh; overflow-y: auto; z-index: 2000;">
+        <div class="booking-card" style="width: 95%; max-width: 1000px; background: #0f172a; border: 1px solid #1e293b;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px;">
+                <h3 style="color: white; margin: 0;"><i class="fa-solid fa-layer-group"></i> Garage Slots</h3>
+                <button class="close-modal" id="closeSlotDashboardBtn" style="position: static;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <h4 style="color: #f59e0b; margin-bottom: 15px;"><i class="fa-solid fa-star"></i> VIP Zone</h4>
+            <div class="slots-grid" id="vipSlotsGrid"></div>
+
+            <h4 style="color: #3b82f6; margin-top: 30px; margin-bottom: 15px;"><i class="fa-solid fa-wheelchair"></i> Accessible Zone</h4>
+            <div class="slots-grid" id="accessibleSlotsGrid"></div>
+
+            <h4 style="color: #00c2b8; margin-top: 30px; margin-bottom: 15px;"><i class="fa-solid fa-car"></i> Standard Zone</h4>
+            <div class="slots-grid" id="standardSlotsGrid"></div>
+        </div>
+    </div>
+    <script>
+        const liveGaragesData = {{ garages | tojson | safe }};
+    </script>
+    
+    <script src="user.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQc2Wo2wUhURa77XlW4rJdpQ3_v5ZpncM&callback=initMap" async defer></script>
+
+</body>
+</html>

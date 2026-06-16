@@ -1,0 +1,106 @@
+/* ================= تصميم صفحة إنشاء الحساب (Split Screen Auth) ================= */
+.auth-page-body {
+    overflow: hidden; /* عشان نمنع السكرول في صفحة التسجيل */
+}
+
+.split-layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* النص الأيسر (البراند) */
+.split-left {
+    flex: 1;
+    background: linear-gradient(135deg, #05080f 0%, #0a192f 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8%;
+    overflow: hidden;
+}
+
+.left-content {
+    position: relative;
+    z-index: 2;
+}
+
+.auth-feature-box {
+    margin-top: 40px;
+    background: rgba(0, 242, 254, 0.1);
+    border: 1px solid rgba(0, 242, 254, 0.2);
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #00c2b8;
+    font-weight: 700;
+}
+
+/* النص الأيمن (الفورمة) */
+.split-right {
+    flex: 1;
+    background-color: var(--surface-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+}
+
+.back-link {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-link:hover {
+    color: var(--primary-color);
+}
+
+.full-form .input-group {
+    margin-bottom: 22px;
+}
+
+/* تظبيط صفحة التسجيل في الوضع النهاري */
+.light-mode .split-right {
+    background-color: #ffffff;
+}
+
+/* تظبيط الموبايل للشاشة المقسومة */
+@media (max-width: 968px) {
+    .split-layout {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    .auth-page-body {
+        overflow: auto;
+    }
+    .split-left {
+        padding: 40px 20px;
+        flex: none;
+    }
+    .back-link {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 30px;
+    }
+    .form-wrapper {
+        padding: 30px 20px;
+    }
+}

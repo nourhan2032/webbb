@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>نظام الملاحة الذكي - تجربة نظام الوصول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f5f7; overflow: hidden; }
+        
+        #map-container { position: relative; width: 100vw; height: 100vh; }
+        #map { height: 100%; width: 100%; }
+        
+        #nav-top-bar {
+            position: absolute; top: 0; left: 0; right: 0;
+            background: #0f9d58; color: white; padding: 15px;
+            text-align: center; font-size: 16px; font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 999; display: none;
+        }
+
+        #nav-bottom-bar {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: white; padding: 15px 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.15); z-index: 999;
+            display: none; align-items: center; justify-content: space-between;
+            border-top-left-radius: 15px; border-top-right-radius: 15px;
+        }
+        .nav-info { font-size: 18px; font-weight: bold; color: #333; }
+        .nav-time { color: #0f9d58; margin-left: 10px; }
+        .close-nav-btn {
+            background: #d93025; color: white; border: none; padding: 10px 20px;
+            border-radius: 20px; font-weight: bold; cursor: pointer;
+        }
+
+        #start-nav-btn {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #1a73e8; color: white; border: none; padding: 14px 40px;
+            font-size: 18px; font-weight: bold; border-radius: 30px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 998; display: none;
+        }
+
+        .info-box { text-align: right; padding: 5px; }
+        .info-box h3 { margin: 0 0 10px 0; color: #1a73e8; font-size: 16px; }
+        .info-box p { margin: 5px 0; font-size: 14px; font-weight: bold;}
+        .free-slots { color: #0f9d58; }
+        .busy-slots { color: #d93025; }
+        .book-btn {
+            margin-top: 10px; padding: 8px 12px; background-color: #1a73e8; color: white;
+            border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map-container">
+        <div id="nav-top-bar">جاري التوجيه إلى الجراج...</div>
+        <div id="map"></div>
+        <button id="start-nav-btn" onclick="enterNavigationMode()">الـبـدء ◀</button>
+        <div id="nav-bottom-bar">
+            <div class="nav-info">
+                <span id="nav-res-time" class="nav-time">-- دقيقة</span>
+                <span id="nav-res-dist">(-- م)</span>
+            </div>
+            <button class="close-nav-btn" onclick="exitNavigationMode()">إنهاء</button>
+        </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQc2Wo2wUhURa77XlW4rJdpQ3_v5ZpncM&callback=initMap" async defer></script>
+
+    <script>
+    let map;
+    let userMarker; 
+    let currentRoute = null;
+    let activeTarget = null; 
+    let isNavigating = false; 
+
+    // هنعرف الأيقونات هنا عشان ميحصلش Error قبل ما جوجل تحمل
+    let defaultUserIcon;
+    let navArrowIcon;
+
+    function initMap() {
+        // تعريف الأيقونات بأمان تام
+        defaultUserIcon = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: '#4285F4',
+            fillOpacity: 1,
+            strokeColor: 'white',
+            strokeWeight: 2,
+            scale: 7
+        };
+
+        navArrowIcon = {
+            path: 'M 0,-12 8,8 0,3 -8,8 z', 
+            fillColor: '#4285F4', 
+            fillOpacity: 1,
+            strokeColor: 'white',
+            strokeWeight: 2,
+            scale: 1.5,
+            rotation: 0 
+        };
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+
+                    // رجعتلك الزووم الأصلي المظبوط (14)
+                    map = new google.maps.Map(document.getElementById("map"), {
+                        center: userLocation, zoom: 14, disableDefaultUI: true 
+                    });
+
+                    userMarker = new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        icon: defaultUserIcon 
+                    });
+
+                    addSmartGarages(userLocation);
+                    startLiveTracking();
+                },
+                () => { alert("يرجى السماح بالوصول للموقع لتجربة الفحص الحي."); }
+            );
+        }
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371000; 
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; 
+    }
+
+    function calculateBearing(startLat, startLng, endLat, endLng) {
+        const lat1 = startLat * Math.PI / 180;
+        const lat2 = endLat * Math.PI / 180;
+        const dLng = (endLng - startLng) * Math.PI / 180;
+        const y = Math.sin(dLng) * Math.cos(lat2);
+        const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+        let bearing = Math.atan2(y, x) * 180 / Math.PI;
+        return (bearing + 360) % 360; 
+    }
+
+    function startLiveTracking() {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const currentPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                
+                if (userMarker) {
+                    userMarker.setPosition(currentPos);
+                    
+                    if (isNavigating && activeTarget) {
+                        const distanceMeters = calculateDistance(currentPos.lat, currentPos.lng, activeTarget.lat, activeTarget.lng);
+                        
+                        if (distanceMeters <= 8) {
+                            alert("لقد وصلت إلى واجهتك! (تم الوصول للجراج بنجاح) 🎉");
+                            exitNavigationMode();
+                            return; 
+                        }
+
+                        const targetBearing = calculateBearing(currentPos.lat, currentPos.lng, activeTarget.lat, activeTarget.lng);
+                        let currentIcon = userMarker.getIcon();
+                        currentIcon.rotation = targetBearing;
+                        userMarker.setIcon(currentIcon);
+                    }
+                }
+                
+                if (isNavigating) {
+                    map.setCenter(currentPos);
+                    updateRouteData(currentPos);
+                }
+            },
+            (err) => console.error(err),
+            { enableHighAccuracy: true, distanceFilter: 1 } 
+        );
+    }
+
+    function addSmartGarages(userLocation) {
+        const projectGarages = [
+            { name: "جراج تجريبي (بجانب الغرفة للاختبار)", latOffset: 0.0002, lngOffset: 0.0002, free: 5, total: 10 },
+            { name: "جراج سمارت بارك - الفرع الرئيسي", latOffset: 0.005, lngOffset: 0.002, free: 12, total: 50 },
+            { name: "جراج سمارت بارك - فرع المول", latOffset: -0.004, lngOffset: 0.006, free: 0, total: 20 }
+        ];
+
+        projectGarages.forEach(garage => {
+            const garageLocation = { lat: userLocation.lat + garage.latOffset, lng: userLocation.lng + garage.lngOffset };
+
+            // شلت الأيقونة البايظة عشان تظهر العلامات الحمراء الأساسية المظبوطة
+            const marker = new google.maps.Marker({
+                position: garageLocation, 
+                map: map, 
+                title: garage.name
+            });
+
+            const statusClass = garage.free > 0 ? "free-slots" : "busy-slots";
+            const statusText = garage.free > 0 ? `متاح ${garage.free} مكان` : "ممتلئ بالكامل";
+            
+            const buttonHtml = garage.free > 0 
+                ? `<button class="book-btn" onclick="prepareBooking('${garage.name}', ${userLocation.lat}, ${userLocation.lng}, ${garageLocation.lat}, ${garageLocation.lng})">احجز الجراج</button>` 
+                : `<button class="book-btn disabled-btn" disabled>الجراج ممتلئ</button>`;
+
+            const infoContent = `
+                <div class="info-box">
+                    <h3>${garage.name}</h3>
+                    <p>السعة الإجمالية: ${garage.total} سيارة</p>
+                    <p class="${statusClass}">الحالة: ${statusText}</p>
+                    ${buttonHtml}
+                </div>
+            `;
+
+            const infowindow = new google.maps.InfoWindow({ content: infoContent });
+            marker.addListener("click", () => { infowindow.open(map, marker); });
+        });
+    }
+
+    window.prepareBooking = function(name, startLat, startLng, endLat, endLng) {
+        activeTarget = { lat: endLat, lng: endLng, name: name };
+        
+        if (currentRoute) currentRoute.setMap(null);
+
+        const url = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?geometries=geojson`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (data.routes && data.routes.length > 0) {
+                    const coords = data.routes[0].geometry.coordinates;
+                    const path = coords.map(c => ({ lat: c[1], lng: c[0] }));
+                    
+                    const targetLocation = { lat: endLat, lng: endLng };
+                    path.push(targetLocation);
+
+                    currentRoute = new google.maps.Polyline({
+                        path: path, geodesic: true, strokeColor: '#1a73e8', strokeOpacity: 0.8, strokeWeight: 6, map: map
+                    });
+
+                    document.getElementById("start-nav-btn").style.display = "block";
+                    alert("تم تأكيد الحجز الحقيقي! اضغط على 'البدء' للتحقق من الملاحة والوصول.");
+                }
+            });
+    };
+
+    window.enterNavigationMode = function() {
+        if (!activeTarget) return;
+        isNavigating = true;
+        document.getElementById("start-nav-btn").style.display = "none"; 
+        document.getElementById("nav-top-bar").style.display = "block";
+        document.getElementById("nav-top-bar").innerText = `اتجه نحو: ${activeTarget.name}`;
+        document.getElementById("nav-bottom-bar").style.display = "flex";
+
+        // قللت زووم الملاحة لـ 17 عشان ميكبرش أوي بشكل يضايقك
+        map.setZoom(17); 
+        
+        if (userMarker) {
+            let currentIcon = userMarker.getIcon();
+            currentIcon = navArrowIcon; 
+
+            const currentPos = { lat: userMarker.getPosition().lat(), lng: userMarker.getPosition().lng() };
+            map.setCenter(currentPos);
+            
+            const targetBearing = calculateBearing(currentPos.lat, currentPos.lng, activeTarget.lat, activeTarget.lng);
+            currentIcon.rotation = targetBearing;
+            userMarker.setIcon(currentIcon);
+        }
+    };
+
+    function updateRouteData(currentPos) {
+        if (!activeTarget) return;
+
+        const distanceMeters = calculateDistance(currentPos.lat, currentPos.lng, activeTarget.lat, activeTarget.lng);
+        const estimatedMinutes = Math.ceil((distanceMeters / 1000) * 15); 
+
+        document.getElementById("nav-res-time").innerText = estimatedMinutes <= 1 ? "أقل من دقيقة" : `${estimatedMinutes} دقائق`;
+        document.getElementById("nav-res-dist").innerText = `(${Math.round(distanceMeters)} متر)`;
+    }
+
+    window.exitNavigationMode = function() {
+        isNavigating = false;
+        document.getElementById("nav-top-bar").style.display = "none";
+        document.getElementById("nav-bottom-bar").style.display = "none";
+        if (currentRoute) currentRoute.setMap(null);
+        activeTarget = null;
+        map.setZoom(14); // يرجع للزووم الطبيعي
+        
+        if (userMarker) {
+            userMarker.setIcon(defaultUserIcon);
+        }
+    };
+    </script>
+</body>
+</html>

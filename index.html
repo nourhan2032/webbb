@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="EN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المواقف الذكي | Smart Parking System</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+</head>
+<body>
+    <header class="navbar">
+        <a href="#" class="logo">
+            <i class="fa-solid fa-car-burst"></i>
+            SmartPark AI
+        </a>
+
+        <nav>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how">How It Works</a></li>
+                <li><a href="locations">Locations</a></li>
+                <li><a href="about.html">about us</a></li>
+            </ul>
+        </nav>
+
+        <div class="nav-actions">
+            <div class="theme-toggle">
+                <i class="fa-solid fa-moon"></i>
+                <span>Night</span>
+            </div>
+            
+            <!-- لوجيك إظهار الأيقونة وزرار الخروج أو زرار تسجيل الدخول -->
+            {% if current_user.is_authenticated %}
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <!-- الأيقونة والاسم (بتودي للداشبورد) -->
+                    <a href="/user-dashboard" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                        <img src="https://ui-avatars.com/api/?name={{ current_user.name }}&background=00c2b8&color=fff" alt="User" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid #00c2b8;">
+                        <span style="color: var(--text-color, #fff); font-weight: 600;">{{ current_user.name.split(' ')[0] }}</span>
+                    </a>
+                    <!-- زرار تسجيل الخروج -->
+                    <a href="/logout" style="color: #ef4444; font-size: 1.2rem; text-decoration: none; padding-left: 10px; border-left: 1px solid #334155; transition: 0.3s;" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            {% else %}
+                <a href="#" class="sign-btn" id="signBtn">Sign In</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <section class="hero">
+        <video class="video-bg" autoplay muted loop playsinline>
+            <source src="Futuristic_smart_parking_syst.mp4" type="video/mp4">
+        </video>
+        <div class="hero-fx"></div>
+        <div class="car-glow"></div>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">SMART PARK</h1>
+            <p class="hero-subtitle">
+                Parking that <span>thinks...</span> for you. 
+                <del>Tickets?</del> Gone!
+            </p>
+            
+            {% if current_user.is_authenticated %}
+                <a href="/user-dashboard" class="hero-btn">Get Started</a>
+            {% else %}
+                <a href="#" class="hero-btn" id="getStartedBtn">Get Started</a>
+            {% endif %}
+        </div>
+    </section>
+        
+    <section class="features" id="features" dir="ltr">
+        <div class="section-header">
+            <h2>Core Technologies</h2>
+            <p>A comprehensive ecosystem combining precise processing, rapid response, and the highest safety standards.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fa-solid fa-brain feature-icon"></i>
+                <h3>Real-Time Detection (YOLO)</h3>
+                <p>Instant AI analysis of surveillance feeds to pinpoint vacant and occupied spaces with ultra-high accuracy.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fa-solid fa-id-card feature-icon"></i>
+                <h3>License Plate Recognition (ALPR)</h3>
+                <p>Seamless and automated entry and exit management through smart license plate reading without human intervention.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fa-solid fa-server feature-icon"></i>
+                <h3>Live Data Analytics</h3>
+                <p>Full data synchronization providing real-time occupancy rates and insights to drive informed decision-making.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fa-solid fa-triangle-exclamation feature-icon"></i>
+                <h3>Incident & Accident Detection</h3>
+                <p>Smart detection of collisions or breakdowns inside the facility, triggering instant alerts for rapid management intervention.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fa-solid fa-magnifying-glass-chart feature-icon"></i>
+                <h3>Automated Tire Inspection</h3>
+                <p>AI-driven tire condition analysis upon entry to alert drivers of severe wear or potential issues, ensuring maximum safety.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fa-solid fa-wheelchair feature-icon"></i>
+                <h3>Smart Accessible Parking</h3>
+                <p>Dedicated monitoring for spaces assigned to people with disabilities, actively issuing alerts for unauthorized parking.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how" dir="ltr">
+        <div class="section-header">
+            <h2>How It Works</h2>
+            <p>Experience a seamless, ticketless, and fully automated parking journey from start to finish.</p>
+        </div>
+
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <h3>Arrive & Scan</h3>
+                <p>Drive up to the gate. Our ALPR cameras instantly read your plate while the AI inspects your tire health.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <h3>Smart Routing</h3>
+                <p>No more driving in circles. Get directed instantly to the nearest available spot or dedicated accessible bay.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <h3>Park Safely</h3>
+                <p>Leave your car with peace of mind. Our YOLO system continuously monitors for accidents or unauthorized parking.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">04</div>
+                <h3>Ticketless Exit</h3>
+                <p>Just drive out. The gate opens automatically as your linked account is billed. Tickets? Gone.</p>
+            </div>
+        </div>
+    </section>
+
+    
+    <div class="modal-overlay" id="signInModal">
+        <div class="modal-container" dir="ltr">
+            <button class="close-modal" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            
+            <h2>Welcome Back</h2>
+            <p class="modal-sub">Sign in to SmartPark AI</p>
+            
+            <form class="auth-form" id="loginForm">
+                <div id="loginError" class="alert alert-danger" style="display: none; color: #ff4d4d; margin-bottom: 15px; text-align: center; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 5px; font-weight: bold;"></div>
+
+                <input type="hidden" name="next_page" id="nextPageInput" value="/">
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="emailInput" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="passwordInput" name="password" placeholder="Password" required>
+                </div>
+                
+                <button type="button" id="loginBtn" class="auth-btn">Sign In</button>
+            </form>
+
+            <script>
+                // Theme Toggle Logic
+                const toggle = document.querySelector(".theme-toggle");
+                toggle.addEventListener("click", () => {
+                    document.body.classList.toggle("light-mode");
+                    if(document.body.classList.contains("light-mode")){
+                        toggle.innerHTML = `
+                            <i class="fa-solid fa-sun"></i>
+                            <span>Day</span>
+                        `;
+                    } else {
+                        toggle.innerHTML = `
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Night</span>
+                        `;
+                    }
+                });
+
+                // Modal Logic
+                const modal = document.getElementById("signInModal");
+                const closeModalBtn = document.getElementById("closeModalBtn");
+                const signBtn = document.getElementById("signBtn");
+                const getStartedBtn = document.getElementById("getStartedBtn");
+                const nextPageInput = document.getElementById("nextPageInput");
+
+                function openModal(e, destination) {
+                    e.preventDefault(); 
+                    nextPageInput.value = destination; // نحدد المكان اللي هيروحله
+                    modal.classList.add("active");
+                }
+
+                function closeModal() {
+                    modal.classList.remove("active");
+                }
+
+                if (signBtn) signBtn.addEventListener("click", (e) => openModal(e, '/'));
+                if (getStartedBtn) getStartedBtn.addEventListener("click", (e) => openModal(e, '/user-dashboard'));
+                if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
+
+                window.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+
+                // Login Submission Logic
+                document.getElementById('loginBtn').addEventListener('click', function() {
+                    let form = document.getElementById('loginForm');
+                    let email = document.getElementById('emailInput');
+                    let password = document.getElementById('passwordInput');
+                    let errorDiv = document.getElementById('loginError');
+
+                    if (!email.value || !password.value) {
+                        form.reportValidity();
+                        return;
+                    }
+
+                    let formData = new FormData(form);
+
+                    fetch('/check_login', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            form.action = '/login';
+                            form.method = 'POST';
+                            form.submit();
+                        } else {
+                            errorDiv.style.display = 'block';
+                            errorDiv.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ' + data.message;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            </script>
+            <div class="auth-footer">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="modern-footer" dir="ltr">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-col brand-col">
+                    <a href="#" class="logo">
+                        <i class="fa-solid fa-square-parking"></i>
+                        SmartPark AI
+                    </a>
+                    <p>Next-generation AI-powered parking and safety management system. Ticketless, secure, and fully automated.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#features">Core Features</a></li>
+                        <li><a href="#how">How It Works</a></li>
+                        <li><a href="#dashboard">Live Dashboard</a></li>
+                        <li><a href="#pricing">Pricing Plans</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">System Status</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col subscribe-col">
+                    <h4>Stay Updated</h4>
+                    <p>Get the latest updates on our AI models and features.</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Smart Parking & Safety Management System. All rights reserved.</p>
+                <div class="footer-badges">
+                    <span class="status-badge"><i class="fa-solid fa-circle"></i> All Systems Operational</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

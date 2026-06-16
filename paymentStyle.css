@@ -1,0 +1,181 @@
+/* ================= 1. تظبيط الصفحة الأساسية ================= */
+.ticket-wrapper {
+    padding-left: 100px !important;
+    padding-right: 100px !important;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* بيخلي التذكرة في نص الشاشة بالضبط */
+    overflow-y: auto; 
+    background-color: var(--bg-color); /* لون الخلفية العام */
+}
+
+/* ================= 2. تصميم التذكرة ================= */
+.ticket-container {
+    background: #0f172a; /* لون كحلي غامق شيك */
+    border: 1px solid #1e293b;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px; /* عرض التذكرة */
+    box-shadow: 0 15px 35px rgba(0, 194, 184, 0.15);
+    overflow: hidden;
+    position: relative;
+    animation: popUp 0.5s ease-out;
+}
+
+@keyframes popUp {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* حركة شيك: قطع التذكرة من الجنبين */
+.ticket-container::before, .ticket-container::after {
+    content: '';
+    position: absolute;
+    top: 55%;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-color); /* لازم يكون نفس لون خلفية الشاشة */
+    border-radius: 50%;
+    z-index: 2;
+}
+.ticket-container::before {
+    left: -20px;
+    box-shadow: inset -1px 0 0 #1e293b;
+}
+.ticket-container::after {
+    right: -20px;
+    box-shadow: inset 1px 0 0 #1e293b;
+}
+
+/* ================= 3. أقسام التذكرة ================= */
+.ticket-header {
+    background: linear-gradient(135deg, rgba(0,194,184,0.15) 0%, rgba(15,23,42,0) 100%);
+    padding: 35px 20px 25px;
+    text-align: center;
+    border-bottom: 2px dashed #1e293b;
+}
+
+.check-icon {
+    font-size: 3.5rem;
+    color: #10b981;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.4));
+}
+
+.ticket-header h2 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin: 0 0 8px 0;
+}
+
+.ticket-header p {
+    color: #94a3b8;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.ticket-details {
+    padding: 30px 40px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.detail-label {
+    color: #94a3b8;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-label i {
+    color: #00c2b8;
+    font-size: 1.1rem;
+}
+
+.detail-value {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: right;
+}
+
+.highlight-slot {
+    background: rgba(0, 194, 184, 0.1);
+    color: #00c2b8;
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 194, 184, 0.3);
+    font-size: 1.2rem;
+}
+
+.detail-divider {
+    height: 0;
+    border-top: 2px dashed #1e293b;
+    margin: 30px 0;
+}
+
+.total-row .detail-label {
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.total-price {
+    font-size: 1.8rem;
+    color: #00c2b8;
+    font-family: 'Urbanist', sans-serif;
+    text-shadow: 0 0 15px rgba(0, 194, 184, 0.3);
+}
+
+.ticket-footer {
+    padding: 10px 40px 40px;
+}
+
+.btn-primary-action {
+    width: 100%;
+    padding: 18px;
+    border-radius: 12px;
+    background: #00c2b8;
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-primary-action:hover { 
+    background: #009b93; 
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 194, 184, 0.3);
+}
+/* =========================================
+   تعديلات الموبايل للتذكرة (paymentStyle.css)
+========================================= */
+@media screen and (max-width: 768px) {
+    /* بنقلل المسافات اليمين والشمال عشان التذكرة تاخد راحتها */
+    .ticket-wrapper {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-top: 0 !important;
+    }
+    
+    .ticket-container {
+        max-width: 100%;
+    }
+    
+    .ticket-details {
+        padding: 20px;
+    }
+}

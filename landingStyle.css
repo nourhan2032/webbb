@@ -1,0 +1,731 @@
+/* =========================================
+   1. الأساسيات والمتغيرات (Variables)
+========================================= */
+:root {
+    --bg-color: #05080f;
+    --surface-color: #0a0f1c;
+    --primary-color: #00f2fe;
+    --secondary-color: #4facfe;
+    --success-color: #00ff87;
+    --danger-color: #ff3366;
+    
+    /* ألوان النصوص */
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    
+    /* ألوان الحدود والخلفيات الشفافة */
+    --border-color: rgba(255, 255, 255, 0.05);
+    --card-bg: rgba(255, 255, 255, 0.02);
+    
+    --font-family: 'Urbanist', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* =========================================
+   2. شريط التمرير (Scrollbar)
+========================================= */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-color); 
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, var(--secondary-color), var(--primary-color));
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+
+.hero-btn {
+    padding: 16px 45px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    color: #05080f;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px -5px rgba(0, 242, 254, 0.4);
+}
+.hero-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px -5px rgba(0, 242, 254, 0.6);
+}
+
+/* =========================================
+   5. قسم البداية (Hero Section)
+========================================= */
+.hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+.video-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.hero-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+}
+.hero-content {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeInUp 1.2s ease-out forwards;
+}
+
+.hero-title {
+    font-size: clamp(4rem, 8vw, 8rem);
+    font-weight: 900;
+    color: white;
+    letter-spacing: 3px;
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 254, 1);
+}
+.hero-subtitle {
+    font-size: 28px;
+    color: #cbd5e1;
+    margin: 20px 0 40px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(0, 0, 0, 0.8);
+}
+.hero-subtitle span {
+    background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-style: italic;
+    font-weight: 800;
+}
+.hero-subtitle del {
+    text-decoration: line-through;
+    text-decoration-color: var(--danger-color);
+    text-decoration-thickness: 3px;
+    color: var(--text-muted);
+}
+
+/* تأثيرات الهيرو (Fog & Car Glow) */
+.hero-fx {
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    overflow:hidden;
+    z-index:1;
+    pointer-events:none;
+}
+.hero-fx::before {
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background: radial-gradient(circle at 30% 30%, rgba(0,242,254,0.08), transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(79,172,254,0.08), transparent 40%);
+    animation: fogMove 12s infinite linear;
+}
+.hero-fx::after {
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background: repeating-linear-gradient(120deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 2px, transparent 2px, transparent 60px);
+    animation: streakMove 8s linear infinite;
+}
+.car-glow {
+    position:absolute;
+    bottom:10%;
+    left:-150px;
+    width:120px;
+    height:60px;
+    background: rgba(0,242,254,0.2);
+    border-radius:20px;
+    filter: blur(20px);
+    box-shadow: 0 0 40px rgba(0,242,254,0.6);
+    animation: drive 6s linear infinite;
+    z-index:2;
+}
+
+/* =========================================
+   6. قسم المميزات (Features)
+========================================= */
+.features {
+    padding: 100px 8%;
+    background-color: var(--bg-color);
+    position: relative;
+}
+/* ================= تصميم عناوين السكاشن (Section Headers) ================= */
+.section-header {
+    text-align: center;
+    margin-bottom: 70px; /* كبرنا المسافة عشان السكشن يتنفس */
+}
+
+/* العنوان الرئيسي (Core Technologies / How it Works) */
+.section-header h2 {
+    font-size: 42px; /* تكبير العنوان */
+    font-weight: 900; /* أثقل وزن للخط عشان يبرز */
+    color: var(--text-main);
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    letter-spacing: -0.5px; /* تضييق المسافات بين الحروف بيدي شكل أحدث */
+}
+
+/* الخط المضيء تحت العنوان (Tech Accent Line) */
+.section-header h2::after {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 4px;
+    bottom: -10px;
+    left: 20%;
+    /* تدرج لوني يختفي من الأطراف وينور من النص */
+    background: linear-gradient(90deg, transparent, #00c2b8, transparent);
+    border-radius: 2px;
+}
+
+/* النص الوصفي تحت العنوان */
+.section-header p {
+    color: var(--text-muted);
+    font-size: 18px; /* تكبير النص */
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 600; /* تقليل الرفع عشان يكون مقروء براحة */
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* الكارت الأساسي للفيوتشر */
+.feature-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 16px;
+    transition: all 0.4s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden; 
+}
+.feature-icon {
+    font-size: 45px;
+    color: #00c2b8;
+    margin-bottom: 22px;
+    display: inline-block;
+    transition: transform 0.4s ease;
+}
+.feature-card:hover .feature-icon {
+    transform: scale(1.15);
+}
+.feature-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-main);
+}
+.feature-card p {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.8;
+}
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: #00c2b8;
+    box-shadow: 0 20px 40px rgba(0, 194, 184, 0.15);
+}
+
+/* حركة اللمعان (Shimmer) للفيوتشر كارد */
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: skewX(-25deg);
+    animation: shimmerEffect 6s infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* =========================================
+   7. قسم كيف يعمل (How It Works)
+========================================= */
+.how-it-works {
+    padding: 100px 8%;
+    background-color: var(--surface-color); 
+}
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    position: relative;
+}
+
+/* كارت الخطوات (تم توحيد تصميمه مع كارت المميزات) */
+.step-card {
+    background-color: var(--surface-color); /* توحيد لون الخلفية */
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 16px; /* توحيد الحواف */
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden; /* ضروري للمعة */
+    z-index: 2;
+}
+.step-card:hover {
+    transform: translateY(-10px);
+    border-color: #00c2b8; /* اللون المميز الجديد */
+    box-shadow: 0 15px 30px rgba(0, 194, 184, 0.15);
+}
+
+/* لمعة كارت الخطوات (نفس لمعة المميزات) */
+.step-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: skewX(-25deg);
+    animation: shimmerEffect 6s infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.step-number {
+    font-size: 40px;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--border-color);
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+    font-family: 'Urbanist', sans-serif;
+}
+.step-card:hover .step-number {
+    color: #00c2b8;
+    -webkit-text-stroke: 0;
+    text-shadow: 0 0 20px rgba(0, 194, 184, 0.4);
+}
+.step-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-main);
+}
+.step-card p {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+/* =========================================
+   8. النافذة المنبثقة (Modal)
+========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 24px;
+    position: relative;
+    transform: translateY(-30px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+.modal-overlay.active .modal-container {
+    transform: translateY(0) scale(1);
+}
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.close-modal:hover {
+    color: var(--danger-color);
+    transform: rotate(90deg);
+}
+.modal-container h2 {
+    font-family: 'Urbanist', sans-serif;
+    color: var(--text-main);
+    font-size: 32px;
+    margin-bottom: 5px;
+    font-weight: 900;
+}
+.modal-sub {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+.auth-form .input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+.auth-form .input-group i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+}
+.auth-form input {
+    width: 100%;
+    padding: 16px 16px 16px 45px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    color: var(--text-main);
+    font-size: 15px;
+    transition: 0.3s;
+}
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(0, 242, 254, 0.05);
+    box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1);
+}
+.auth-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    border: none;
+    color: #05080f;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 25px;
+}
+.auth-btn:hover {
+    box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
+    transform: translateY(-2px);
+}
+.auth-footer {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 800;
+    transition: 0.3s;
+}
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   10. الأنيميشن (Animations)
+========================================= */
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fogMove {
+    0% { transform:translate(0,0); }
+    50% { transform:translate(-5%,5%); }
+    100% { transform:translate(0,0); }
+}
+@keyframes streakMove {
+    0% { transform:translateX(0); }
+    100% { transform:translateX(-50%); }
+}
+@keyframes drive {
+    0% { transform:translateX(0); }
+    100% { transform:translateX(140vw); }
+}
+@keyframes shimmerEffect {
+    0% { left: -100%; }
+    20% { left: 200%; }
+    100% { left: 200%; }
+}
+
+/* =========================================
+   11. الموبايل (Media Queries)
+========================================= */
+@media (max-width: 968px) {
+    nav { display: none; }
+    .navbar { width: 95%; padding: 14px 18px; }
+    .theme-toggle { width: 75px; height: 38px; }
+    .sign-btn { padding: 10px 18px; font-size: 14px; }
+    .hero-title { font-size: 3.5rem; }
+    .hero-subtitle { font-size: 1.5rem; }
+    header { padding: 20px 4%; }
+}
+
+/* =========================================
+   12. الوضع النهاري (Light Mode) بالكامل
+========================================= */
+.light-mode {
+    --bg-color: #dee8e9; 
+    --surface-color: #ffffff;
+    --text-main: #0f172a; 
+    --text-muted: #475569;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --card-bg: rgba(0, 0, 0, 0.02);
+}
+
+.light-mode .navbar {
+    background: rgba(255, 255, 255, 0.25);
+    border-bottom: none;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+.light-mode nav ul li a,
+.light-mode .logo,
+.light-mode .theme-toggle span,
+.light-mode .theme-toggle i {
+    color: #0f172a; 
+}
+.light-mode nav ul li a:hover {
+    color: #008c85; /* اللون الجديد في النافبار */
+}
+.light-mode nav ul li a::after {
+    background-color: #008c85;
+}
+.light-mode .sign-btn {
+    border: 1px solid #525357;
+    color: #05080f;
+    background: transparent;
+}
+.light-mode .sign-btn:hover {
+    background: #008c85;
+    color: #ffffff;
+    border-color: #008c85;
+    box-shadow: 0 5px 15px rgba(0, 140, 133, 0.4);
+    transform: translateY(-2px);
+}
+.light-mode .hero-overlay {
+    background: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: none; 
+}
+.light-mode .hero-title {
+    color: #0a0f1c; 
+    text-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.9);
+}
+.light-mode .hero-subtitle {
+    color: #0f172a;
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 255, 255, 1), 0 0 25px rgba(255, 255, 255, 0.8);
+}
+.light-mode .hero-subtitle span {
+    background: linear-gradient(45deg, #022f50, #065f46);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 1)); 
+}
+.light-mode .hero-subtitle del {
+    color: #242f3d;
+    text-decoration-color: #e11d48;
+    text-decoration-thickness: 3px;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 1));
+}
+/* ================= تظبيط العناوين في الوضع النهاري ================= */
+.light-mode .section-header h2 {
+    color: #0f172a; /* كحلي داكن جداً */
+}
+
+/* تغيير لون الخط المضيء تحت العنوان للونك النهاري */
+.light-mode .section-header h2::after {
+    background: linear-gradient(90deg, transparent, #008c85, transparent);
+}
+
+.light-mode .section-header p {
+    color: #475569; /* رمادي مريح */
+    font-weight: 600;
+}
+.light-mode .features,
+.light-mode .how-it-works {
+    background-color: #dee8e9; 
+}
+
+/* تعديل لون شبكة الـ Features عشان تليق مع الخلفية الجديدة (اختياري) */
+.light-mode .features {
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+}
+/* كروت المميزات و كيف يعمل في الوضع النهاري */
+.light-mode .feature-card,
+.light-mode .step-card {
+    background-color: #f1f5f9; 
+    border: 1px solid rgba(0, 0, 0, 0.08); 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03); 
+}
+.light-mode .feature-icon {
+    color: #008c85; /* اللون الأغمق للنهار */
+}
+.light-mode .feature-card h3,
+.light-mode .step-card h3 {
+    color: #0f172a; 
+}
+.light-mode .feature-card p,
+.light-mode .step-card p {
+    color: #475569; 
+    font-weight: 500;
+}
+
+.light-mode .feature-card:hover,
+.light-mode .step-card:hover {
+    background-color: #e2e8f0; 
+    border-color: #008c85; 
+    box-shadow: 0 15px 30px rgba(0, 140, 133, 0.15); 
+    transform: translateY(-5px);
+}
+.light-mode .step-card:hover {
+    transform: translateY(-8px);
+}
+/* لمعة الكروت في النهار */
+.light-mode .feature-card::before,
+.light-mode .step-card::before {
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
+}
+
+/* أرقام كارت الخطوات في النهار */
+.light-mode .step-number {
+    -webkit-text-stroke: 2px #94a3b8;
+    color: transparent;
+    
+}
+.light-mode .step-card:hover .step-number {
+    color: #008c85; /* تعبئة الرقم باللون الجديد للنهار */
+    text-shadow: none;
+    -webkit-text-stroke: 0; 
+}
+
+/* المودال في الوضع النهاري */
+.light-mode .modal-container {
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+.light-mode .auth-form input {
+    background: #f8fafc;
+    color: #0f172a;
+}
+.light-mode .auth-form input:focus {
+    background: #ffffff;
+    border-color: #008c85;
+    box-shadow: 0 0 0 4px rgba(0, 140, 133, 0.1);
+}
+.light-mode .auth-btn {
+    background: #008c85;
+    color: #ffffff;
+}
+.light-mode .auth-btn:hover {
+    box-shadow: 0 8px 20px rgba(0, 140, 133, 0.3);
+}
+.light-mode .auth-footer a {
+    color: #008c85;
+}
+.light-mode .modern-footer {
+    background-color: #f1f5f9;
+}
+
+.light-mode .footer-col h4 {
+    color: #0f172a;
+}
+
+.light-mode .footer-col h4::after {
+    background-color: #008c85;
+}
+
+.light-mode .social-links a {
+    background: #ffffff;
+    color: #0f172a;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-mode .social-links a:hover {
+    background: #008c85;
+    border-color: #008c85;
+    color: #ffffff;
+}
+
+.light-mode .subscribe-form input {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #0f172a;
+}
+
+.light-mode .subscribe-form button {
+    background: #008c85;
+    color: #ffffff;
+}
+
+.light-mode .status-badge {
+    background: #ffffff;
+    color: #475569;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ================= تظبيط الفوتر على الموبايل ================= */
+@media (max-width: 968px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+}

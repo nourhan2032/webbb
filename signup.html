@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | SmartPark AI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Urbanist:ital,wght@0,300;0,600;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="signup.css">
+
+</head>
+<body class="auth-page-body">
+    <div class="split-layout">
+        
+        <div class="split-left">
+            <div class="left-content">
+                <a href="index.html" class="logo" style="font-size: 32px; margin-bottom: 20px; display: inline-block;">
+                    <i class="fa-solid fa-car-burst"></i> SmartPark AI
+                </a>
+                <h1 style="font-size: 40px; color: white; margin-bottom: 15px;">Join the Future of Parking.</h1>
+                <p style="color: #cbd5e1; font-size: 18px; line-height: 1.6;">
+                    Create an account to link your vehicle, automate your payments, and experience ticketless entry today.
+                </p>
+                
+                <div class="auth-feature-box">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Powered by YOLO & ALPR</span>
+                </div>
+            </div>
+            <div class="hero-fx"></div>
+        </div>
+
+        <div class="split-right">
+            <div class="form-wrapper">
+                <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+                
+                <h2>Create Account</h2>
+                <p class="modal-sub">Register your vehicle to get started</p>
+                
+                <form class="auth-form full-form" action="/register" method="POST">
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                      {% if messages %}
+                        {% for category, message in messages %}
+                          <div class="alert alert-{{ category }}" style="color: #ef4444; background-color: #fee2e2; border: 1px solid #fca5a5; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; font-size: 14px;">
+                              <i class="fa-solid fa-circle-exclamation" style="margin-right: 5px;"></i> {{ message }}
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+                    {% endwith %}
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="full_name" placeholder="Full Name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" name="phone" placeholder="Phone Number (e.g. 010...)" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" name="plate_number" placeholder="License Plate Number (e.g. ABC-1234)" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <button type="submit" class="auth-btn">Create Account</button>
+                </form>
+                
+                <div class="auth-footer">
+                    Already have an account? <a href="index.html">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
